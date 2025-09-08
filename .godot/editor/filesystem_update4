@@ -1,0 +1,7 @@
+res://battle_test.tscn
+res://README.md
+res://battle_rule_processor.gd
+res://battle_skill.gd
+res://property_projectors_v9.gd
+res://status_effect.gd
+res://addons/gut/gut.gd

@@ -1,0 +1,9 @@
+[remap]
+
+importer="script"
+type="GDScript"
+uid="uid://b4xqnwf4gsytf"
+
+[deps]
+
+source_file="res://addons/gut/test.gd"

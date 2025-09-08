@@ -1,59 +1,36 @@
-# Agent Guidelines for Go Project
+# AGENTS.md - Godot 4 GDScript Project
 
-This document outlines the conventions and commands for agents operating within this Go codebase.
+## Build/Test Commands
+- **Run tests**: `./run_tests.sh` or `godot --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -gexit`
+- **Run specific test**: `godot --headless -s res://addons/gut/gut_cmdln.gd -gtest=test_property_projector.gd -gexit`
+- **Run tests in editor**: Open `run_all_tests.tscn` and press F6
+- **Lint/Format**: Use Godot editor's built-in script analyzer
+- **Run project**: Open in Godot 4.x editor and press F5
 
-## Build, Lint, and Test Commands
-
-*   **Build All:** `go build ./...`
-*   **Lint All:** `go vet ./...`
-*   **Format All:** `go fmt ./...`
-*   **Run All Tests:** `go test ./...`
-*   **Run Single Test:** `go test -run <TestName> ./<package_path>`
-    *   Example: `go test -run TestNewBattleManager ./battle`
+## Testing Notes
+- Tests use the GUT (Godot Unit Test) framework v9.3.0
+- Test files must extend `GutTest` class from `res://addons/gut/test.gd`
+- Tests are located in `tests/unit/` and `tests/integration/`
+- Enable the GUT plugin in Project Settings > Plugins if not already enabled
 
 ## Code Style Guidelines
 
-*   **Imports:** Group standard library imports, then third-party imports, separated by a newline.
-*   **Formatting:** Adhere strictly to `gofmt` standards.
-*   **Types:** Use clear and idiomatic Go type definitions.
-*   **Naming Conventions:**
-    *   Packages: Short, all lowercase (e.g., `battle`).
-    *   Structs/Public Identifiers: `CamelCase`.
-    *   Private Identifiers: `camelCase`.
-    *   Constants: `CamelCase`.
-*   **Error Handling:** Functions returning errors should use the `(result, error)` pattern. Check errors immediately after function calls.
-*   **Comments:** Use `//` for single-line comments. `TODO` comments are used for pending work.
+### GDScript Conventions
+- Use `class_name` at top of scripts for custom classes
+- Prefer `extends RefCounted` for data objects, `extends Node` for scene objects
+- Order: class_name, extends, signals, enums, exports, vars, _init, _ready, public methods, private methods
+- Use type hints: `var value: float`, `func method(param: String) -> int`
+- Prefix private members with underscore: `var _internal_state`
 
-## Project structure
-```
-/your-project
-├── cmd/
-│   └── game-server/
-│       ├── main.go
-│       └── ...
-│
-├── internal/
-│   ├── battle/
-│   │   ├── battle_manager.go
-│   │   ├── battle_field.go
-│   │   └── receiver.go
-│   └── ...
-│
-├── pkg/
-│   ├── battle_logic/
-│   │   ├── v1/
-│   │   |   ├── types.go
-│   │   │   └── combat_logic.go
-│   │   │   └── combatant_logic.go
-│   │   ├── v2/
-│   │   |   ├── types.go
-│   │   │   └── combat_logic.go
-│   │   │   └── combatant_logic.go
-│   │   └── ...│
-├── go.mod
-└── go.sum
-```
+### Naming & Structure
+- Classes: PascalCase (PropertyProjector, Modifier)
+- Functions/variables: snake_case (add_modifier, base_damage)
+- Signals: snake_case verb phrases (projection_changed)
+- Constants/enums: UPPER_SNAKE_CASE or PascalCase for enum values
+- File names: snake_case.gd matching class_name when possible
 
-## Cursor/Copilot Rules
-
-No specific Cursor or Copilot rule files were found in this repository.
+### Error Handling
+- Use `push_error()` for runtime errors
+- Use `assert()` for programmer errors/preconditions
+- Return null or empty values on failure, document in comments
+- Validate inputs early, especially Dictionary keys and types

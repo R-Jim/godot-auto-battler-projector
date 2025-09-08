@@ -1,0 +1,275 @@
+[
+  {
+    "id": "critical_strike",
+    "name": "Critical Strike",
+    "conditions": {
+      "skill_name": "critical_strike"
+    },
+    "modifiers": [
+      {
+        "id": "crit_damage_multiplier",
+        "op": "MUL",
+        "value": 2.0,
+        "priority": 100,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "frozen_fire_vulnerability",
+    "name": "Frozen targets take extra fire damage",
+    "conditions": {
+      "and": [
+        { "property": "target_status", "op": "contains", "value": "frozen" },
+        { "property": "skill_damage_type", "op": "eq", "value": "fire" }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "frozen_fire_vuln_mod",
+        "op": "MUL",
+        "value": 1.5,
+        "priority": 50,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "burning_ice_resistance",
+    "name": "Burning targets resist ice damage",
+    "conditions": {
+      "and": [
+        { "property": "target_status", "op": "contains", "value": "burning" },
+        { "property": "skill_damage_type", "op": "eq", "value": "ice" }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "burning_ice_resist_mod",
+        "op": "MUL",
+        "value": 0.5,
+        "priority": 50,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "last_stand",
+    "name": "Low health damage boost",
+    "conditions": {
+      "property": "caster_health_percentage",
+      "op": "lt",
+      "value": 0.25
+    },
+    "modifiers": [
+      {
+        "id": "last_stand_damage_mod",
+        "op": "ADD",
+        "value": 20.0,
+        "priority": 10,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "bloodied_rage",
+    "name": "Bloodied units gain attack",
+    "conditions": {
+      "property": "target_health_percentage",
+      "op": "lt",
+      "value": 0.3
+    },
+    "modifiers": [
+      {
+        "id": "bloodied_attack_mod",
+        "op": "ADD",
+        "value": 15.0,
+        "priority": 5,
+        "applies_to": ["attack"]
+      }
+    ]
+  },
+  {
+    "id": "frozen_status_effect",
+    "name": "Frozen status reduces speed",
+    "conditions": {
+      "and": [
+        { "property": "status_id", "op": "eq", "value": "frozen" },
+        { "property": "status_applied", "op": "eq", "value": true }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "frozen_speed_debuff",
+        "op": "MUL",
+        "value": 0.5,
+        "priority": 20,
+        "applies_to": ["speed"]
+      }
+    ]
+  },
+  {
+    "id": "burning_status_effect",
+    "name": "Burning status damage over time",
+    "conditions": {
+      "and": [
+        { "property": "status_id", "op": "eq", "value": "burning" },
+        { "property": "status_turn_trigger", "op": "eq", "value": true }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "burning_dot_damage",
+        "op": "ADD",
+        "value": 5.0,
+        "priority": 0,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "poison_status_effect",
+    "name": "Poison status damage over time",
+    "conditions": {
+      "and": [
+        { "property": "status_id", "op": "eq", "value": "poison" },
+        { "property": "status_turn_trigger", "op": "eq", "value": true }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "poison_dot_damage",
+        "op": "ADD",
+        "value": 3.0,
+        "priority": 0,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "regeneration_status_effect",
+    "name": "Regeneration heals over time",
+    "conditions": {
+      "and": [
+        { "property": "status_id", "op": "eq", "value": "regeneration" },
+        { "property": "status_turn_trigger", "op": "eq", "value": true }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "regen_heal",
+        "op": "ADD",
+        "value": 10.0,
+        "priority": 0,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "blessed_status_effect",
+    "name": "Blessed status increases all stats",
+    "conditions": {
+      "and": [
+        { "property": "status_id", "op": "eq", "value": "blessed" },
+        { "property": "status_applied", "op": "eq", "value": true }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "blessed_attack_buff",
+        "op": "MUL",
+        "value": 1.2,
+        "priority": 15,
+        "applies_to": ["attack"]
+      },
+      {
+        "id": "blessed_defense_buff",
+        "op": "MUL",
+        "value": 1.2,
+        "priority": 15,
+        "applies_to": ["defense"]
+      },
+      {
+        "id": "blessed_speed_buff",
+        "op": "MUL",
+        "value": 1.1,
+        "priority": 15,
+        "applies_to": ["speed"]
+      }
+    ]
+  },
+  {
+    "id": "cursed_status_effect",
+    "name": "Cursed status reduces defense",
+    "conditions": {
+      "and": [
+        { "property": "status_id", "op": "eq", "value": "cursed" },
+        { "property": "status_applied", "op": "eq", "value": true }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "cursed_defense_debuff",
+        "op": "MUL",
+        "value": 0.7,
+        "priority": 20,
+        "applies_to": ["defense"]
+      }
+    ]
+  },
+  {
+    "id": "team_synergy_same_side",
+    "name": "Same team damage reduction",
+    "conditions": {
+      "property": "caster_team",
+      "op": "eq",
+      "value": "$target_team"
+    },
+    "modifiers": [
+      {
+        "id": "friendly_fire_reduction",
+        "op": "MUL",
+        "value": 0.0,
+        "priority": 200,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "execute_low_health",
+    "name": "Execute skill bonus damage",
+    "conditions": {
+      "and": [
+        { "property": "skill_name", "op": "eq", "value": "execute" },
+        { "property": "target_health_percentage", "op": "lt", "value": 0.2 }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "execute_bonus_damage",
+        "op": "MUL",
+        "value": 3.0,
+        "priority": 90,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "shield_bash_stun",
+    "name": "Shield bash applies stun",
+    "conditions": {
+      "property": "skill_name",
+      "op": "eq",
+      "value": "shield_bash"
+    },
+    "modifiers": [
+      {
+        "id": "shield_bash_damage",
+        "op": "ADD",
+        "value": 5.0,
+        "priority": 10,
+        "applies_to": []
+      }
+    ]
+  }
+]

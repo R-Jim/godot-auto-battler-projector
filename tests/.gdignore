@@ -1,0 +1,2 @@
+# This file tells Godot to not import the test files as scenes
+# but still allows them to be run as scripts

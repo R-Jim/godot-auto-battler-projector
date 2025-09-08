@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://addons/gut/GutScene.tscn" id="1"]
+
+[node name="TestRunner" type="Node"]
+
+[node name="Gut" parent="." instance=ExtResource("1")]
+_run_on_load = true
+_directory1 = "res://tests"
+_directory2 = ""
+_directory3 = ""
+_directory4 = ""
+_directory5 = ""
+_directory6 = ""
+_should_exit = true
+_should_exit_on_success = false
+_log_level = 1
+_include_subdirs = true

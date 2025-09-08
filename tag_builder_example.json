@@ -1,0 +1,50 @@
+{
+  "rules": [
+    {
+      "tag": "Strong",
+      "priority": 10,
+      "condition": {
+        "op": "gt",
+        "property": "strength",
+        "value": 15
+      }
+    },
+    {
+      "tag": "Weak",
+      "priority": 5,
+      "condition": {
+        "op": "lt",
+        "property": "strength",
+        "value": 5
+      }
+    },
+    {
+      "tag": "Balanced",
+      "priority": 1,
+      "condition": {
+        "op": "and",
+        "children": [
+          {
+            "op": "gte",
+            "property": "strength",
+            "value": 5
+          },
+          {
+            "op": "lte",
+            "property": "strength",
+            "value": 15
+          }
+        ]
+      }
+    },
+    {
+      "tag": "NameMatches",
+      "priority": 2,
+      "condition": {
+        "op": "regex",
+        "property": "name",
+        "value": "^Hero.*"
+      }
+    }
+  ]
+}
