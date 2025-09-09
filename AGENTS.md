@@ -1,5 +1,26 @@
 # AGENTS.md - Godot 4 GDScript Project
 
+## Encounter System Overview
+The game now includes a comprehensive encounter system that manages battles across multiple waves. Key features:
+- **Wave-based battles**: Each encounter consists of multiple waves of enemies
+- **Dynamic difficulty**: Adjustable difficulty modes with adaptive scaling
+- **JSON configuration**: All encounters and enemy templates defined in data files
+- **Rewards system**: Experience, gold, items, and unlockables
+- **Environment modifiers**: Encounter-specific battle rules
+
+### Key Files:
+- `encounter_manager.gd` - Main encounter orchestrator
+- `encounter.gd` - Individual encounter configuration
+- `wave.gd` - Wave management within encounters
+- `unit_factory.gd` - Enemy generation from templates
+- `difficulty_scaler.gd` - Difficulty scaling system
+- `encounter_rewards.gd` - Rewards and progression system
+- `data/encounters.json` - Encounter definitions
+- `data/unit_templates.json` - Enemy unit templates
+
+### Test Scene:
+- Run `encounter_test.tscn` to test the encounter system
+
 ## Build/Test Commands
 - **Run tests**: `./run_tests.sh` or `godot --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -gexit`
 - **Run specific test**: `godot --headless -s res://addons/gut/gut_cmdln.gd -gtest=test_property_projector.gd -gexit`

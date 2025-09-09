@@ -1,0 +1,100 @@
+[gd_scene load_steps=3 format=3 uid="uid://btm8e7xvq4ged"]
+
+[ext_resource type="Script" path="res://encounter_test.gd" id="1_7y8nq"]
+[ext_resource type="Script" path="res://auto_battler.gd" id="2_3nkjl"]
+[ext_resource type="Script" path="res://encounter_manager.gd" id="3_4mlkn"]
+
+[node name="EncounterTest" type="Node2D"]
+script = ExtResource("1_7y8nq")
+
+[node name="EncounterManager" type="Node" parent="."]
+script = ExtResource("3_4mlkn")
+
+[node name="AutoBattler" type="Node" parent="."]
+script = ExtResource("2_3nkjl")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="EncounterUI" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="EncounterInfo" type="PanelContainer" parent="UILayer/EncounterUI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 400.0
+offset_bottom = 150.0
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/EncounterUI/EncounterInfo"]
+layout_mode = 2
+
+[node name="EncounterTitle" type="Label" parent="UILayer/EncounterUI/EncounterInfo/VBox"]
+layout_mode = 2
+text = "Select an Encounter"
+theme_override_font_sizes/font_size = 24
+
+[node name="WaveInfo" type="Label" parent="UILayer/EncounterUI/EncounterInfo/VBox"]
+layout_mode = 2
+text = "Choose an encounter to begin"
+
+[node name="EncounterSelection" type="PanelContainer" parent="UILayer/EncounterUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/EncounterUI/EncounterSelection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/EncounterUI/EncounterSelection/VBox"]
+layout_mode = 2
+text = "Available Encounters"
+theme_override_font_sizes/font_size = 20
+
+[node name="EncounterList" type="ItemList" parent="UILayer/EncounterUI/EncounterSelection/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 200)
+
+[node name="DifficultyLabel" type="Label" parent="UILayer/EncounterUI/EncounterSelection/VBox"]
+layout_mode = 2
+text = "Difficulty:"
+
+[node name="DifficultySelector" type="OptionButton" parent="UILayer/EncounterUI/EncounterSelection/VBox"]
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="UILayer/EncounterUI/EncounterSelection/VBox"]
+layout_mode = 2
+text = "Start Encounter"
+
+[node name="RewardsPanel" type="PanelContainer" parent="UILayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -300.0
+offset_right = 200.0
+offset_bottom = -50.0
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/RewardsPanel"]
+layout_mode = 2
+
+[node name="RewardsText" type="RichTextLabel" parent="UILayer/RewardsPanel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 200)
+bbcode_enabled = true

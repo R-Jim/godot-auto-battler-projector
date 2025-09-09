@@ -185,3 +185,9 @@ func _check_condition(cond: Dictionary, context: Dictionary) -> bool:
 func reload_rules() -> void:
     rules.clear()
     load_rules()
+
+func add_temporary_rule(rule: Dictionary) -> void:
+    rules.append(rule)
+
+func clear_temporary_rules() -> void:
+    load_rules()

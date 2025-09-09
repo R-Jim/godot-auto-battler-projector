@@ -1,0 +1,502 @@
+{
+  "encounters": [
+    {
+      "encounter_id": "tutorial_battle",
+      "encounter_name": "Training Grounds",
+      "description": "Learn the basics of combat against training dummies.",
+      "difficulty_level": 1,
+      "is_boss_encounter": false,
+      "is_optional": false,
+      "next_encounters": ["forest_ambush"],
+      "tags": ["tutorial", "starter"],
+      "waves": [
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Basic Combat",
+          "wave_description": "Face a single opponent",
+          "enemy_units": [
+            {
+              "template_id": "bandit_warrior",
+              "count": 1,
+              "level": 1,
+              "position": "center"
+            }
+          ],
+          "formation": "default",
+          "spawn_delay": 1.0,
+          "victory_condition": "ELIMINATE_ALL",
+          "pre_wave_dialogue": [
+            {
+              "speaker": "Instructor",
+              "text": "Show me what you've learned. Defeat this bandit!"
+            }
+          ]
+        }
+      ],
+      "victory_conditions": {
+        "type": "all_waves_completed"
+      },
+      "defeat_conditions": {
+        "type": "team_eliminated"
+      },
+      "rewards": {
+        "experience": 100,
+        "gold": 50,
+        "items": ["health_potion"],
+        "unlock_encounters": ["forest_ambush"]
+      }
+    },
+    {
+      "encounter_id": "forest_ambush",
+      "encounter_name": "Forest Ambush",
+      "description": "Bandits have been terrorizing travelers on the forest road. Stop them!",
+      "difficulty_level": 1,
+      "background_scene": "forest_path",
+      "music_track": "battle_forest",
+      "is_boss_encounter": false,
+      "is_optional": false,
+      "next_encounters": ["mountain_pass", "goblin_camp"],
+      "tags": ["story", "bandits", "forest"],
+      "unlock_requirements": {
+        "completed_encounters": ["tutorial_battle"]
+      },
+      "environment_modifiers": [
+        {
+          "id": "forest_cover",
+          "name": "Forest Cover",
+          "conditions": {
+            "property": "encounter_id",
+            "op": "eq",
+            "value": "forest_ambush"
+          },
+          "modifiers": [
+            {
+              "id": "forest_defense",
+              "op": "MUL",
+              "value": 1.1,
+              "priority": 20,
+              "applies_to": ["defense"]
+            }
+          ]
+        }
+      ],
+      "waves": [
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Scout Party",
+          "enemy_units": [
+            {
+              "template_id": "bandit_archer",
+              "count": 2,
+              "level": 1
+            },
+            {
+              "template_id": "bandit_warrior",
+              "count": 1,
+              "level": 2
+            }
+          ],
+          "formation": "triangle",
+          "spawn_delay": 2.0,
+          "victory_condition": "ELIMINATE_ALL"
+        },
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Main Force",
+          "wave_description": "The bandits' main group arrives!",
+          "enemy_units": [
+            {
+              "template_id": "bandit_archer",
+              "count": 3,
+              "level": 2
+            },
+            {
+              "template_id": "bandit_rogue",
+              "count": 2,
+              "level": 2
+            }
+          ],
+          "formation": "wedge",
+          "spawn_delay": 3.0,
+          "wave_modifiers": [
+            {
+              "id": "desperate_bandits",
+              "name": "Desperate Attack",
+              "conditions": {
+                "property": "target_health_percentage",
+                "op": "lt",
+                "value": 0.3
+              },
+              "modifiers": [
+                {
+                  "id": "desperate_damage",
+                  "op": "MUL",
+                  "value": 1.3,
+                  "priority": 40,
+                  "applies_to": ["attack"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "wave_type": "BOSS",
+          "wave_name": "Bandit Leader",
+          "enemy_units": [
+            {
+              "template_id": "bandit_leader",
+              "count": 1,
+              "level": 3
+            },
+            {
+              "template_id": "bandit_warrior",
+              "count": 2,
+              "level": 2
+            }
+          ],
+          "formation": "triangle",
+          "spawn_delay": 3.0,
+          "pre_wave_dialogue": [
+            {
+              "speaker": "Bandit Leader",
+              "text": "You'll pay for interfering with our operation!"
+            }
+          ],
+          "post_wave_dialogue": [
+            {
+              "speaker": "Bandit Leader",
+              "text": "This isn't over... The guild will hear about this!"
+            }
+          ]
+        }
+      ],
+      "victory_conditions": {
+        "type": "all_waves_completed"
+      },
+      "defeat_conditions": {
+        "type": "team_eliminated"
+      },
+      "rewards": {
+        "experience": 500,
+        "gold": 200,
+        "items": ["health_potion", "mana_potion"],
+        "unlock_encounters": ["mountain_pass", "goblin_camp"],
+        "performance_bonuses": {
+          "no_deaths": {
+            "gold": 100,
+            "items": ["rare_gem"]
+          },
+          "under_time": {
+            "time_limit": 180,
+            "experience": 200
+          }
+        }
+      }
+    },
+    {
+      "encounter_id": "goblin_camp",
+      "encounter_name": "Goblin Encampment",
+      "description": "A goblin war party is preparing to raid nearby villages. Strike first!",
+      "difficulty_level": 2,
+      "is_boss_encounter": false,
+      "is_optional": true,
+      "next_encounters": ["abandoned_cemetery"],
+      "tags": ["optional", "goblins"],
+      "unlock_requirements": {
+        "completed_encounters": ["forest_ambush"]
+      },
+      "waves": [
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Goblin Scouts",
+          "enemy_units": [
+            {
+              "template_id": "goblin_warrior",
+              "count": 4,
+              "level": 2
+            }
+          ],
+          "formation": "scattered",
+          "spawn_delay": 1.5
+        },
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Shaman Support",
+          "enemy_units": [
+            {
+              "template_id": "goblin_warrior",
+              "count": 3,
+              "level": 3
+            },
+            {
+              "template_id": "goblin_shaman",
+              "count": 2,
+              "level": 2
+            }
+          ],
+          "formation": "line_horizontal",
+          "spawn_delay": 2.0
+        },
+        {
+          "wave_type": "SURVIVAL",
+          "wave_name": "Goblin Horde",
+          "wave_description": "Survive the endless goblin assault!",
+          "enemy_units": [
+            {
+              "template_id": "goblin_warrior",
+              "count": 6,
+              "level": 3
+            },
+            {
+              "template_id": "goblin_shaman",
+              "count": 1,
+              "level": 3
+            }
+          ],
+          "formation": "circle",
+          "spawn_delay": 2.0,
+          "victory_condition": "SURVIVE_TIME",
+          "survival_time": 60.0
+        }
+      ],
+      "rewards": {
+        "experience": 600,
+        "gold": 300,
+        "items": ["strength_potion", "goblin_trinket"],
+        "unlock_units": ["goblin_ally"]
+      }
+    },
+    {
+      "encounter_id": "mountain_pass",
+      "encounter_name": "Mountain Pass",
+      "description": "The path through the mountains is guarded by wild beasts.",
+      "difficulty_level": 2,
+      "is_boss_encounter": false,
+      "is_optional": false,
+      "next_encounters": ["abandoned_cemetery"],
+      "tags": ["story", "beasts", "mountain"],
+      "unlock_requirements": {
+        "completed_encounters": ["forest_ambush"]
+      },
+      "environment_modifiers": [
+        {
+          "id": "high_altitude",
+          "name": "High Altitude",
+          "conditions": {
+            "property": "encounter_id",
+            "op": "eq",
+            "value": "mountain_pass"
+          },
+          "modifiers": [
+            {
+              "id": "altitude_speed_penalty",
+              "op": "MUL",
+              "value": 0.9,
+              "priority": 15,
+              "applies_to": ["speed"]
+            }
+          ]
+        }
+      ],
+      "waves": [
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Wolf Pack",
+          "enemy_units": [
+            {
+              "template_id": "wolf",
+              "count": 3,
+              "level": 2
+            }
+          ],
+          "formation": "triangle",
+          "spawn_delay": 1.5
+        },
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Alpha Arrives",
+          "enemy_units": [
+            {
+              "template_id": "dire_wolf",
+              "count": 1,
+              "level": 3
+            },
+            {
+              "template_id": "wolf",
+              "count": 4,
+              "level": 3
+            }
+          ],
+          "formation": "wedge",
+          "spawn_delay": 2.5,
+          "wave_modifiers": [
+            {
+              "id": "pack_tactics",
+              "name": "Pack Tactics",
+              "conditions": {
+                "property": "unit_tag",
+                "op": "contains",
+                "value": "wolf"
+              },
+              "modifiers": [
+                {
+                  "id": "pack_damage",
+                  "op": "ADD",
+                  "value": 3.0,
+                  "priority": 25,
+                  "applies_to": ["attack"]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "rewards": {
+        "experience": 600,
+        "gold": 250,
+        "items": ["wolf_pelt", "speed_potion"],
+        "unlock_encounters": ["abandoned_cemetery"]
+      }
+    },
+    {
+      "encounter_id": "abandoned_cemetery",
+      "encounter_name": "Abandoned Cemetery",
+      "description": "Dark magic stirs the dead. A necromancer must be stopped!",
+      "difficulty_level": 3,
+      "is_boss_encounter": true,
+      "is_optional": false,
+      "next_encounters": ["chapter2_start"],
+      "tags": ["story", "undead", "boss"],
+      "unlock_requirements": {
+        "completed_encounters": ["mountain_pass"]
+      },
+      "environment_modifiers": [
+        {
+          "id": "unholy_ground",
+          "name": "Unholy Ground",
+          "conditions": {
+            "property": "encounter_id",
+            "op": "eq",
+            "value": "abandoned_cemetery"
+          },
+          "modifiers": [
+            {
+              "id": "unholy_undead_buff",
+              "op": "MUL",
+              "value": 1.15,
+              "priority": 20,
+              "applies_to": ["attack", "defense"],
+              "target_tags": ["undead"]
+            },
+            {
+              "id": "unholy_healing_reduction",
+              "op": "MUL",
+              "value": 0.5,
+              "priority": 30,
+              "applies_to": ["healing_received"]
+            }
+          ]
+        }
+      ],
+      "waves": [
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Restless Dead",
+          "enemy_units": [
+            {
+              "template_id": "skeleton_warrior",
+              "count": 3,
+              "level": 3
+            },
+            {
+              "template_id": "skeleton_archer",
+              "count": 2,
+              "level": 3
+            }
+          ],
+          "formation": "line_horizontal",
+          "spawn_delay": 2.0,
+          "pre_wave_dialogue": [
+            {
+              "speaker": "???",
+              "text": "Who dares disturb the eternal rest?"
+            }
+          ]
+        },
+        {
+          "wave_type": "STANDARD",
+          "wave_name": "Undead Reinforcements",
+          "enemy_units": [
+            {
+              "template_id": "skeleton_warrior",
+              "count": 4,
+              "level": 4
+            },
+            {
+              "template_id": "skeleton_archer",
+              "count": 3,
+              "level": 4
+            }
+          ],
+          "formation": "square",
+          "spawn_delay": 2.5
+        },
+        {
+          "wave_type": "BOSS",
+          "wave_name": "The Necromancer",
+          "enemy_units": [
+            {
+              "template_id": "necromancer",
+              "count": 1,
+              "level": 5
+            },
+            {
+              "template_id": "skeleton_warrior",
+              "count": 2,
+              "level": 4
+            }
+          ],
+          "formation": "triangle",
+          "spawn_delay": 3.0,
+          "pre_wave_dialogue": [
+            {
+              "speaker": "Necromancer",
+              "text": "Your souls will serve me for eternity!"
+            }
+          ],
+          "post_wave_dialogue": [
+            {
+              "speaker": "Necromancer",
+              "text": "Impossible! The ritual was... incomplete..."
+            }
+          ]
+        }
+      ],
+      "victory_conditions": {
+        "type": "all_waves_completed"
+      },
+      "defeat_conditions": {
+        "type": "team_eliminated"
+      },
+      "rewards": {
+        "experience": 1000,
+        "gold": 500,
+        "items": ["necromancer_staff", "resurrection_scroll"],
+        "unlock_encounters": ["chapter2_start"],
+        "achievement_progress": {
+          "undead_slayer": 1
+        },
+        "performance_bonuses": {
+          "no_deaths": {
+            "gold": 200,
+            "items": ["legendary_gem"]
+          },
+          "under_time": {
+            "time_limit": 240,
+            "experience": 400
+          }
+        }
+      }
+    }
+  ]
+}

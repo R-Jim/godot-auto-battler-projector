@@ -1,0 +1,372 @@
+{
+  "unit_templates": [
+    {
+      "id": "bandit_warrior",
+      "name": "Warrior",
+      "name_prefix": "Bandit",
+      "base_stats": {
+        "health": 120,
+        "attack": 12,
+        "defense": 8,
+        "speed": 4
+      },
+      "stat_modifiers": {
+        "health": 1.0,
+        "attack": 0.9,
+        "defense": 0.8,
+        "speed": 1.0
+      },
+      "level_scaling": {
+        "health": 0.12,
+        "attack": 0.08,
+        "defense": 0.06,
+        "speed": 0.03
+      },
+      "skills": ["basic_attack", "cleave"],
+      "ai_type": "AGGRESSIVE",
+      "equipment": {
+        "weapon": {
+          "name": "Rusty Sword",
+          "slot": "weapon",
+          "rarity": "common",
+          "stat_bonuses": {
+            "attack": 3
+          }
+        }
+      },
+      "tags": ["bandit", "melee", "warrior"]
+    },
+    {
+      "id": "bandit_archer",
+      "name": "Archer",
+      "name_prefix": "Bandit",
+      "base_stats": {
+        "health": 80,
+        "attack": 15,
+        "defense": 5,
+        "speed": 7
+      },
+      "stat_modifiers": {
+        "health": 0.8,
+        "attack": 1.1,
+        "defense": 0.7,
+        "speed": 1.2
+      },
+      "level_scaling": {
+        "health": 0.08,
+        "attack": 0.1,
+        "defense": 0.04,
+        "speed": 0.05
+      },
+      "skills": ["arrow_shot"],
+      "ai_type": "AGGRESSIVE",
+      "equipment": {
+        "weapon": {
+          "name": "Short Bow",
+          "slot": "weapon",
+          "rarity": "common",
+          "stat_bonuses": {
+            "attack": 5,
+            "speed": 1
+          }
+        }
+      },
+      "tags": ["bandit", "ranged", "archer"]
+    },
+    {
+      "id": "bandit_rogue",
+      "name": "Rogue",
+      "name_prefix": "Bandit",
+      "base_stats": {
+        "health": 90,
+        "attack": 18,
+        "defense": 6,
+        "speed": 9
+      },
+      "stat_modifiers": {
+        "health": 0.9,
+        "attack": 1.2,
+        "defense": 0.8,
+        "speed": 1.3
+      },
+      "level_scaling": {
+        "health": 0.08,
+        "attack": 0.12,
+        "defense": 0.04,
+        "speed": 0.06
+      },
+      "skills": ["basic_attack", "poison_strike"],
+      "ai_type": "AGGRESSIVE",
+      "equipment": {
+        "weapon": {
+          "name": "Twin Daggers",
+          "slot": "weapon",
+          "rarity": "common",
+          "stat_bonuses": {
+            "attack": 4,
+            "speed": 2
+          }
+        }
+      },
+      "tags": ["bandit", "melee", "rogue", "assassin"]
+    },
+    {
+      "id": "bandit_leader",
+      "name": "Leader",
+      "name_prefix": "Bandit",
+      "base_stats": {
+        "health": 200,
+        "attack": 20,
+        "defense": 12,
+        "speed": 6
+      },
+      "stat_modifiers": {
+        "health": 1.5,
+        "attack": 1.3,
+        "defense": 1.2,
+        "speed": 1.0
+      },
+      "level_scaling": {
+        "health": 0.15,
+        "attack": 0.1,
+        "defense": 0.08,
+        "speed": 0.04
+      },
+      "skills": ["basic_attack", "cleave", "rally_cry"],
+      "ai_type": "BALANCED",
+      "equipment": {
+        "weapon": {
+          "name": "Bandit Chief Sword",
+          "slot": "weapon",
+          "rarity": "uncommon",
+          "stat_bonuses": {
+            "attack": 8,
+            "defense": 2
+          }
+        },
+        "armor": {
+          "name": "Studded Leather",
+          "slot": "armor",
+          "rarity": "uncommon",
+          "stat_bonuses": {
+            "defense": 5,
+            "health": 20
+          }
+        }
+      },
+      "tags": ["bandit", "boss", "leader", "melee"]
+    },
+    {
+      "id": "goblin_warrior",
+      "name": "Warrior",
+      "name_prefix": "Goblin",
+      "base_stats": {
+        "health": 80,
+        "attack": 10,
+        "defense": 6,
+        "speed": 5
+      },
+      "stat_modifiers": {
+        "health": 0.8,
+        "attack": 0.9,
+        "defense": 0.9,
+        "speed": 1.1
+      },
+      "level_scaling": {
+        "health": 0.1,
+        "attack": 0.08,
+        "defense": 0.06,
+        "speed": 0.04
+      },
+      "skills": ["basic_attack"],
+      "ai_type": "AGGRESSIVE",
+      "tags": ["goblin", "melee", "warrior"]
+    },
+    {
+      "id": "goblin_shaman",
+      "name": "Shaman",
+      "name_prefix": "Goblin",
+      "base_stats": {
+        "health": 60,
+        "attack": 15,
+        "defense": 4,
+        "speed": 6,
+        "mana": 80
+      },
+      "stat_modifiers": {
+        "health": 0.6,
+        "attack": 1.2,
+        "defense": 0.6,
+        "speed": 1.0,
+        "mana": 1.0
+      },
+      "level_scaling": {
+        "health": 0.06,
+        "attack": 0.1,
+        "defense": 0.04,
+        "speed": 0.04,
+        "mana": 0.08
+      },
+      "skills": ["fireball", "heal"],
+      "ai_type": "SUPPORT",
+      "equipment": {
+        "weapon": {
+          "name": "Shaman Staff",
+          "slot": "weapon",
+          "rarity": "common",
+          "stat_bonuses": {
+            "attack": 3,
+            "mana": 10
+          }
+        }
+      },
+      "tags": ["goblin", "magic", "support", "healer"]
+    },
+    {
+      "id": "wolf",
+      "name": "Wolf",
+      "name_prefix": "Wild",
+      "base_stats": {
+        "health": 100,
+        "attack": 14,
+        "defense": 6,
+        "speed": 8
+      },
+      "stat_modifiers": {
+        "health": 1.0,
+        "attack": 1.0,
+        "defense": 0.8,
+        "speed": 1.2
+      },
+      "level_scaling": {
+        "health": 0.1,
+        "attack": 0.09,
+        "defense": 0.05,
+        "speed": 0.05
+      },
+      "skills": ["basic_attack"],
+      "ai_type": "AGGRESSIVE",
+      "tags": ["beast", "wolf", "melee", "fast"]
+    },
+    {
+      "id": "dire_wolf",
+      "name": "Wolf",
+      "name_prefix": "Dire",
+      "base_stats": {
+        "health": 150,
+        "attack": 18,
+        "defense": 8,
+        "speed": 7
+      },
+      "stat_modifiers": {
+        "health": 1.3,
+        "attack": 1.2,
+        "defense": 1.0,
+        "speed": 1.1
+      },
+      "level_scaling": {
+        "health": 0.12,
+        "attack": 0.1,
+        "defense": 0.06,
+        "speed": 0.04
+      },
+      "skills": ["basic_attack", "howl"],
+      "ai_type": "BALANCED",
+      "tags": ["beast", "wolf", "elite", "melee"]
+    },
+    {
+      "id": "skeleton_warrior",
+      "name": "Warrior",
+      "name_prefix": "Skeleton",
+      "base_stats": {
+        "health": 100,
+        "attack": 12,
+        "defense": 10,
+        "speed": 4
+      },
+      "stat_modifiers": {
+        "health": 0.9,
+        "attack": 1.0,
+        "defense": 1.2,
+        "speed": 0.8
+      },
+      "level_scaling": {
+        "health": 0.1,
+        "attack": 0.08,
+        "defense": 0.08,
+        "speed": 0.03
+      },
+      "skills": ["basic_attack"],
+      "ai_type": "DEFENSIVE",
+      "status_immunities": ["poison", "bleeding"],
+      "tags": ["undead", "skeleton", "melee", "warrior"]
+    },
+    {
+      "id": "skeleton_archer",
+      "name": "Archer",
+      "name_prefix": "Skeleton",
+      "base_stats": {
+        "health": 70,
+        "attack": 14,
+        "defense": 6,
+        "speed": 5
+      },
+      "stat_modifiers": {
+        "health": 0.7,
+        "attack": 1.1,
+        "defense": 0.8,
+        "speed": 0.9
+      },
+      "level_scaling": {
+        "health": 0.07,
+        "attack": 0.1,
+        "defense": 0.05,
+        "speed": 0.04
+      },
+      "skills": ["arrow_shot"],
+      "ai_type": "AGGRESSIVE",
+      "status_immunities": ["poison", "bleeding"],
+      "tags": ["undead", "skeleton", "ranged", "archer"]
+    },
+    {
+      "id": "necromancer",
+      "name": "Necromancer",
+      "name_prefix": "Dark",
+      "base_stats": {
+        "health": 120,
+        "attack": 25,
+        "defense": 8,
+        "speed": 5,
+        "mana": 100
+      },
+      "stat_modifiers": {
+        "health": 1.0,
+        "attack": 1.3,
+        "defense": 0.9,
+        "speed": 0.9,
+        "mana": 1.2
+      },
+      "level_scaling": {
+        "health": 0.08,
+        "attack": 0.12,
+        "defense": 0.05,
+        "speed": 0.03,
+        "mana": 0.1
+      },
+      "skills": ["frost_bolt", "summon_skeleton", "life_drain"],
+      "ai_type": "BALANCED",
+      "equipment": {
+        "weapon": {
+          "name": "Necromancer Staff",
+          "slot": "weapon",
+          "rarity": "rare",
+          "stat_bonuses": {
+            "attack": 10,
+            "mana": 20
+          }
+        }
+      },
+      "tags": ["undead", "boss", "magic", "summoner"]
+    }
+  ]
+}

@@ -21,6 +21,7 @@ var turn_queue: Array = []
 var active_unit: BattleUnit = null
 
 var rule_processor: BattleRuleProcessor
+var battle_context: Dictionary = {}
 
 func _ready() -> void:
 	if not rule_processor:

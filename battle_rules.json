@@ -271,5 +271,102 @@
         "applies_to": []
       }
     ]
+  },
+  {
+    "id": "encounter_forest_ambush_stealth",
+    "name": "Forest ambush stealth advantage",
+    "conditions": {
+      "and": [
+        { "property": "encounter_id", "op": "eq", "value": "forest_ambush" },
+        { "property": "unit_team", "op": "eq", "value": 2 },
+        { "property": "round_number", "op": "lte", "value": 3 }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "forest_stealth_speed",
+        "op": "MUL",
+        "value": 1.2,
+        "priority": 25,
+        "applies_to": ["speed"]
+      }
+    ]
+  },
+  {
+    "id": "encounter_mountain_altitude",
+    "name": "Mountain altitude affects ranged attacks",
+    "conditions": {
+      "and": [
+        { "property": "encounter_id", "op": "eq", "value": "mountain_pass" },
+        { "property": "skill_tag", "op": "contains", "value": "ranged" }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "altitude_range_penalty",
+        "op": "MUL",
+        "value": 0.85,
+        "priority": 20,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "encounter_cemetery_undead_resistance",
+    "name": "Undead resist holy damage less in cemetery",
+    "conditions": {
+      "and": [
+        { "property": "encounter_id", "op": "eq", "value": "abandoned_cemetery" },
+        { "property": "target_tag", "op": "contains", "value": "undead" },
+        { "property": "skill_damage_type", "op": "eq", "value": "holy" }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "cemetery_holy_vulnerability",
+        "op": "MUL",
+        "value": 1.5,
+        "priority": 60,
+        "applies_to": []
+      }
+    ]
+  },
+  {
+    "id": "wave_survival_escalation",
+    "name": "Survival waves get harder over time",
+    "conditions": {
+      "and": [
+        { "property": "wave_type", "op": "eq", "value": "SURVIVAL" },
+        { "property": "battle_elapsed_time", "op": "gt", "value": 30 }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "survival_damage_escalation",
+        "op": "MUL",
+        "value": 1.25,
+        "priority": 30,
+        "applies_to": ["attack"]
+      }
+    ]
+  },
+  {
+    "id": "boss_wave_determination",
+    "name": "Boss units fight harder",
+    "conditions": {
+      "and": [
+        { "property": "wave_type", "op": "eq", "value": "BOSS" },
+        { "property": "unit_tag", "op": "contains", "value": "boss" }
+      ]
+    },
+    "modifiers": [
+      {
+        "id": "boss_determination",
+        "op": "MUL",
+        "value": 1.2,
+        "priority": 40,
+        "applies_to": ["attack", "defense"]
+      }
+    ]
   }
 ]

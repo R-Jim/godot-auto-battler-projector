@@ -78,6 +78,11 @@ func get_status_list() -> Array[String]:
 		result.append(status.id)
 	return result
 
+func clear_status_effects() -> void:
+	for status in status_effects.duplicate():
+		remove_status_effect(status)
+	status_effects.clear()
+
 func add_skill(skill: BattleSkill) -> void:
 	if not skills.has(skill):
 		skills.append(skill)
