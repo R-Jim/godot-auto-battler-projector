@@ -422,7 +422,14 @@ encounter_manager.encounter_completed.connect(_on_encounter_completed)
 ```
 
 ### Testing
-Run `encounter_test.tscn` to test the encounter system with a sample UI.
+- Run `encounter_test.tscn` for basic encounter system testing
+- Run `encounter_test_scene.tscn` for a full-featured encounter test interface with:
+  - Encounter selection screen with details
+  - Live battle visualization
+  - Team status tracking
+  - Battle log
+  - Results screen with rewards
+  - Session statistics
 
 ## Configuration Guide
 

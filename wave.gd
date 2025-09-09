@@ -107,13 +107,19 @@ static func from_dict(data: Dictionary) -> Wave:
             wave.wave_type = WaveType[type_string]
     
     if "enemy_units" in data:
-        wave.enemy_units = data.enemy_units
+        wave.enemy_units.clear()
+        for unit_data in data.enemy_units:
+            if unit_data is Dictionary:
+                wave.enemy_units.append(unit_data)
     
     if "formation" in data:
         wave.formation = data.formation
     
     if "wave_modifiers" in data:
-        wave.wave_modifiers = data.wave_modifiers
+        wave.wave_modifiers.clear()
+        for modifier in data.wave_modifiers:
+            if modifier is Dictionary:
+                wave.wave_modifiers.append(modifier)
     
     if "spawn_delay" in data:
         wave.spawn_delay = data.spawn_delay
@@ -142,9 +148,15 @@ static func from_dict(data: Dictionary) -> Wave:
         wave.wave_description = data.wave_description
     
     if "pre_wave_dialogue" in data:
-        wave.pre_wave_dialogue = data.pre_wave_dialogue
+        wave.pre_wave_dialogue.clear()
+        for dialogue in data.pre_wave_dialogue:
+            if dialogue is Dictionary:
+                wave.pre_wave_dialogue.append(dialogue)
     
     if "post_wave_dialogue" in data:
-        wave.post_wave_dialogue = data.post_wave_dialogue
+        wave.post_wave_dialogue.clear()
+        for dialogue in data.post_wave_dialogue:
+            if dialogue is Dictionary:
+                wave.post_wave_dialogue.append(dialogue)
     
     return wave

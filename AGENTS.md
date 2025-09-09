@@ -55,6 +55,17 @@ The game now includes a comprehensive encounter system that manages battles acro
 - Use `assert()` for programmer errors/preconditions
 - Return null or empty values on failure, document in comments
 - Validate inputs early, especially Dictionary keys and types
+- **Dictionary Access**: Always check if key exists with `has()` before accessing:
+  ```gdscript
+  # Bad - causes "Invalid access to property or key" error
+  var value = dict["key"]
+  
+  # Good - safe access
+  if dict.has("key"):
+      var value = dict["key"]
+  # Or use get() with default
+  var value = dict.get("key", default_value)
+  ```
 
 ## MCP Integration
 

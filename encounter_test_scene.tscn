@@ -1,0 +1,233 @@
+[gd_scene load_steps=4 format=3 uid="uid://dr4n8xk7m5rap"]
+
+[ext_resource type="Script" uid="uid://dp5sax8k2n7q1" path="res://encounter_test_scene.gd" id="1_8xnmy"]
+[ext_resource type="Script" uid="uid://hk5m4mp14mvi" path="res://encounter_manager.gd" id="2_5jklm"]
+[ext_resource type="Script" uid="uid://c6i2chu7ubghy" path="res://auto_battler.gd" id="3_6nkop"]
+
+[node name="EncounterTestScene" type="Node2D"]
+script = ExtResource("1_8xnmy")
+
+[node name="EncounterManager" type="Node" parent="."]
+script = ExtResource("2_5jklm")
+
+[node name="AutoBattler" type="Node" parent="."]
+script = ExtResource("3_6nkop")
+
+[node name="Battlefield" type="Node2D" parent="."]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="SelectionUI" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SelectionPanel" type="PanelContainer" parent="UILayer/SelectionUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/SelectionUI/SelectionPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UILayer/SelectionUI/SelectionPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Select Encounter"
+horizontal_alignment = 1
+
+[node name="EncounterList" type="ItemList" parent="UILayer/SelectionUI/SelectionPanel/VBox"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="EncounterDetails" type="RichTextLabel" parent="UILayer/SelectionUI/SelectionPanel/VBox"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+bbcode_enabled = true
+
+[node name="ButtonContainer" type="HBoxContainer" parent="UILayer/SelectionUI/SelectionPanel/VBox"]
+layout_mode = 2
+
+[node name="DifficultyLabel" type="Label" parent="UILayer/SelectionUI/SelectionPanel/VBox/ButtonContainer"]
+layout_mode = 2
+text = "Difficulty: "
+
+[node name="DifficultySelector" type="OptionButton" parent="UILayer/SelectionUI/SelectionPanel/VBox/ButtonContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="UILayer/SelectionUI/SelectionPanel/VBox/ButtonContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Start"
+
+[node name="EncounterUI" type="Control" parent="UILayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopPanel" type="PanelContainer" parent="UILayer/EncounterUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/EncounterUI/TopPanel"]
+layout_mode = 2
+
+[node name="EncounterTitle" type="Label" parent="UILayer/EncounterUI/TopPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Encounter Name"
+horizontal_alignment = 1
+
+[node name="WaveInfo" type="Label" parent="UILayer/EncounterUI/TopPanel/VBox"]
+layout_mode = 2
+text = "Wave 1/3"
+horizontal_alignment = 1
+
+[node name="StatsPanel" type="PanelContainer" parent="UILayer/EncounterUI"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 120.0
+
+[node name="StatsText" type="RichTextLabel" parent="UILayer/EncounterUI/StatsPanel"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[b]Stats[/b]"
+
+[node name="BattleUI" type="Control" parent="UILayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Team1Panel" type="PanelContainer" parent="UILayer/BattleUI"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 150.0
+offset_right = 300.0
+offset_bottom = 550.0
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/BattleUI/Team1Panel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/BattleUI/Team1Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Your Team"
+horizontal_alignment = 1
+
+[node name="Team2Panel" type="PanelContainer" parent="UILayer/BattleUI"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_top = 150.0
+offset_right = -20.0
+offset_bottom = 550.0
+grow_horizontal = 0
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/BattleUI/Team2Panel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UILayer/BattleUI/Team2Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Enemies"
+horizontal_alignment = 1
+
+[node name="BattleLog" type="PanelContainer" parent="UILayer/BattleUI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/BattleUI/BattleLog"]
+layout_mode = 2
+
+[node name="BattleLog" type="RichTextLabel" parent="UILayer/BattleUI/BattleLog/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="WaveProgress" type="ProgressBar" parent="UILayer/BattleUI"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 350.0
+offset_top = 120.0
+offset_right = -350.0
+offset_bottom = 140.0
+grow_horizontal = 2
+
+[node name="ResultsUI" type="Control" parent="UILayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResultsPanel" type="PanelContainer" parent="UILayer/ResultsUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -150.0
+offset_right = 250.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/ResultsUI/ResultsPanel"]
+layout_mode = 2
+
+[node name="ResultsText" type="RichTextLabel" parent="UILayer/ResultsUI/ResultsPanel/VBox"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+bbcode_enabled = true
+
+[node name="ContinueButton" type="Button" parent="UILayer/ResultsUI/ResultsPanel/VBox"]
+layout_mode = 2
+text = "Continue"

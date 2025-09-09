@@ -3,7 +3,9 @@
     "id": "critical_strike",
     "name": "Critical Strike",
     "conditions": {
-      "skill_name": "critical_strike"
+      "property": "skill_name",
+      "op": "eq",
+      "value": "critical_strike"
     },
     "modifiers": [
       {

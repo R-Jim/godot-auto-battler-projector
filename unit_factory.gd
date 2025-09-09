@@ -160,15 +160,15 @@ static func _create_skill_from_id(skill_id: String, level: int) -> BattleSkill:
 static func _create_equipment_from_data(equipment_data: Dictionary, level: int) -> Equipment:
 	var equipment = Equipment.new()
 	
-	equipment.item_name = equipment_data.get("name", "Equipment")
-	equipment.slot_type = equipment_data.get("slot", "weapon")
+	equipment.equipment_name = equipment_data.get("name", "Equipment")
+	equipment.slot = equipment_data.get("slot", "weapon")
 	equipment.rarity = equipment_data.get("rarity", "common")
 	equipment.level_requirement = max(1, level - 2)
 	
 	var stat_bonuses = equipment_data.get("stat_bonuses", {})
 	for stat in stat_bonuses:
 		var bonus = stat_bonuses[stat] * (1.0 + (level - 1) * 0.05)
-		equipment.stat_bonuses[stat] = bonus
+		equipment.add_additive_stat(stat, bonus)
 	
 	return equipment
 

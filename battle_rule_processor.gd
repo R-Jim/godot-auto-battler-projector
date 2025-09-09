@@ -24,7 +24,7 @@ func load_rules() -> void:
     
     var file = FileAccess.open(file_path, FileAccess.READ)
     if not file:
-        push_error("Failed to open rules file: " + file_path)
+        push_error("BattleRuleProcessor: Failed to open rules file at '%s'. Ensure the file exists and is readable." % file_path)
         return
     
     var json_text = file.get_as_text()
@@ -35,13 +35,15 @@ func load_rules() -> void:
         rules = parsed
         print("Loaded " + str(rules.size()) + " rules")
     else:
-        push_error("Invalid rules format: must be array")
+        push_error("BattleRuleProcessor: Invalid rules format in '%s'. Expected JSON array, got %s" % [file_path, typeof(parsed)])
 
 func get_modifiers_for_context(context: Dictionary) -> Array:
     var result: Array[PropertyProjector.Modifier] = []
     
-    for rule in rules:
+    for i in range(rules.size()):
+        var rule = rules[i]
         if not rule.has("conditions") or not rule.has("modifiers"):
+            push_warning("BattleRuleProcessor: Rule at index %d missing required fields ('conditions' and/or 'modifiers'). Rule data: %s" % [i, JSON.stringify(rule)])
             continue
         
         if _eval_conditions(rule.conditions, context):
@@ -54,7 +56,14 @@ func get_modifiers_for_context(context: Dictionary) -> Array:
 
 func _create_modifier_from_data(mod_data: Dictionary):
     if not mod_data.has("id") or not mod_data.has("op") or not mod_data.has("value"):
-        push_error("Invalid modifier data: missing required fields")
+        var missing_fields = []
+        if not mod_data.has("id"):
+            missing_fields.append("id")
+        if not mod_data.has("op"):
+            missing_fields.append("op")
+        if not mod_data.has("value"):
+            missing_fields.append("value")
+        push_error("BattleRuleProcessor: Invalid modifier data - missing required fields: %s. Modifier data: %s" % [missing_fields, JSON.stringify(mod_data)])
         return null
     
     var op = _string_to_op(mod_data.op)
@@ -80,7 +89,7 @@ func _string_to_op(op_str: String) -> int:
         "MUL": return PropertyProjector.Modifier.Op.MUL
         "SET": return PropertyProjector.Modifier.Op.SET
         _: 
-            push_error("Unknown operation: " + op_str)
+            push_error("BattleRuleProcessor: Unknown operation '%s'. Valid operations: ADD, MUL, SET" % op_str)
             return PropertyProjector.Modifier.Op.ADD
 
 func _eval_conditions(cond: Dictionary, context: Dictionary) -> bool:
@@ -112,10 +121,12 @@ func _check_condition(cond: Dictionary, context: Dictionary) -> bool:
     var value = cond.get("value")
     
     if property.is_empty():
-        push_error("Condition missing property field")
+        push_error("BattleRuleProcessor: Condition missing required 'property' field. Condition data: %s" % JSON.stringify(cond))
         return false
     
     if not context.has(property):
+        # Silently return false - this is often expected behavior
+        # Only log in debug mode if needed
         return false
     
     var context_value = context[property]
@@ -179,7 +190,7 @@ func _check_condition(cond: Dictionary, context: Dictionary) -> bool:
             return false
         
         _:
-            push_error("Unknown operator: " + op)
+            push_error("BattleRuleProcessor: Unknown operator '%s' in condition. Valid operators: eq, neq, gt, gte, lt, lte, contains, in, regex. Full condition: %s" % [op, JSON.stringify(cond)])
             return false
 
 func reload_rules() -> void:
