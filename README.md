@@ -14,8 +14,9 @@ A sophisticated auto battler implementation for Godot 4 that uses a data-driven 
 8. [Status Effects](#status-effects)
 9. [Equipment System](#equipment-system)
 10. [AI System](#ai-system)
-11. [Configuration Guide](#configuration-guide)
-12. [Examples](#examples)
+11. [Encounter System](#encounter-system)
+12. [Configuration Guide](#configuration-guide)
+13. [Examples](#examples)
 
 ## Overview
 
@@ -311,6 +312,118 @@ Equipment modifiers are permanent while equipped and stack with all other modifi
 - Heal priority (based on ally health)
 - Synergies (e.g., fire vs frozen)
 
+## Encounter System
+
+### Overview
+
+The encounter system provides wave-based combat scenarios with progression, rewards, and dynamic difficulty scaling.
+
+### Key Components
+
+1. **EncounterManager** (`encounter_manager.gd`)
+   - Orchestrates encounter flow
+   - Manages wave transitions
+   - Tracks player progress and statistics
+   - Distributes rewards
+
+2. **Encounter** (`encounter.gd`)
+   - Individual encounter configuration
+   - Contains multiple waves of enemies
+   - Defines victory/defeat conditions
+   - Specifies rewards and unlockables
+
+3. **Wave** (`wave.gd`)
+   - Single combat wave within an encounter
+   - Enemy composition and formations
+   - Wave-specific modifiers and objectives
+   - Victory conditions (eliminate all, survive time, etc.)
+
+4. **UnitFactory** (`unit_factory.gd`)
+   - Generates enemies from JSON templates
+   - Applies level scaling and difficulty modifiers
+   - Manages formations and positioning
+
+5. **DifficultyScaler** (`difficulty_scaler.gd`)
+   - Five difficulty modes: Easy, Normal, Hard, Nightmare, Adaptive
+   - Dynamic scaling based on player performance
+   - Progressive difficulty increase through encounters
+
+### Wave Types
+- **Standard**: Defeat all enemies
+- **Boss**: Defeat boss unit(s)
+- **Survival**: Survive for specified duration
+- **Timed**: Complete within time limit
+- **Endless**: Survive as long as possible
+- **Objective**: Complete specific goals
+
+### Rewards System
+- **Immediate**: Gold, XP after each wave
+- **Completion**: Major rewards for finishing encounter
+- **Performance**: Bonuses for no deaths, speed completion
+- **Unlockables**: New encounters, units, skills
+
+### Data Configuration
+
+Encounters are defined in `data/encounters.json`:
+```json
+{
+  "encounter_id": "forest_ambush",
+  "encounter_name": "Forest Ambush",
+  "waves": [
+    {
+      "wave_type": "standard",
+      "enemy_units": [
+        {
+          "template_id": "bandit_archer",
+          "count": 2,
+          "level": 1
+        }
+      ],
+      "formation": "triangle"
+    }
+  ],
+  "rewards": {
+    "experience": 500,
+    "gold": 200,
+    "items": ["health_potion"]
+  }
+}
+```
+
+Enemy templates in `data/unit_templates.json`:
+```json
+{
+  "id": "bandit_archer",
+  "name": "Archer",
+  "base_stats": {
+    "health": 80,
+    "attack": 15,
+    "defense": 5,
+    "speed": 7
+  },
+  "skills": ["arrow_shot"],
+  "ai_type": "AGGRESSIVE"
+}
+```
+
+### Usage Example
+```gdscript
+# Initialize encounter manager
+var encounter_manager = EncounterManager.new()
+encounter_manager.difficulty_mode = DifficultyScaler.DifficultyMode.NORMAL
+
+# Start an encounter
+var player_team = [warrior, mage, healer, archer]
+encounter_manager.start_encounter("forest_ambush", player_team)
+
+# Connect signals
+encounter_manager.wave_started.connect(_on_wave_started)
+encounter_manager.encounter_completed.connect(_on_encounter_completed)
+```
+
+### Testing
+Run `encounter_test.tscn` to test the encounter system with a sample UI.
+
 ## Configuration Guide
 
 ### Adding a New Skill
@@ -480,6 +593,34 @@ match mod.op:
 ```
 
 This system provides unlimited flexibility while maintaining clean, understandable code. Designers can create complex interactions without programming knowledge, and developers can extend the system without breaking existing content.
+
+## Getting Started
+
+### Requirements
+- Godot Engine 4.4.1 or higher
+- GUT (Godot Unit Test) framework v9.3.0 (included in addons/)
+
+### Quick Start
+1. Clone the repository
+2. Open the project in Godot 4
+3. Run `sample_battle.tscn` for basic combat demo
+4. Run `encounter_test.tscn` for encounter system demo
+5. Run tests with `./run_tests.sh` or open `run_all_tests.tscn` in editor
+
+### Project Structure
+```
+├── core/                     # Core battle system
+│   ├── auto_battler.gd      # Main battle orchestrator
+│   ├── battle_unit.gd       # Unit class
+│   ├── battle_skill.gd      # Skill system
+│   └── battle_ai.gd         # AI decision making
+├── data/                     # JSON configuration files
+│   ├── encounters.json      # Encounter definitions
+│   └── unit_templates.json  # Enemy templates
+├── tests/                    # Unit and integration tests
+├── addons/gut/              # Testing framework
+└── scenes/                   # Demo and test scenes
+```
 
 ## MCP (Model Context Protocol) Integration
 
