@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "godot-auto-battler": {
+      "command": "python",
+      "args": [
+        "/Users/orion/Work/Orion/godot-auto-battler-projector/mcp_godot_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "/Users/orion/Work/Orion/godot-auto-battler-projector/venv/lib/python3.*/site-packages"
+      }
+    }
+  }
+}

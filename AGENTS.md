@@ -55,3 +55,22 @@ The game now includes a comprehensive encounter system that manages battles acro
 - Use `assert()` for programmer errors/preconditions
 - Return null or empty values on failure, document in comments
 - Validate inputs early, especially Dictionary keys and types
+
+## MCP Integration
+
+This project includes MCP (Model Context Protocol) server integration for AI-assisted development:
+
+### Setup MCP Server
+1. Run `./setup_mcp.sh` to install dependencies
+2. Configure Claude Desktop (see MCP_SETUP.md)
+3. Server provides tools for testing, data management, and scene control
+
+### Available MCP Tools
+- `run_tests` - Run GUT unit tests
+- `check_script_errors` - Validate GDScript syntax
+- `get_encounter_data` - View encounter configurations
+- `add_unit_template` - Add new unit templates
+- `create_encounter` - Create new encounters
+- `run_scene` - Run specific Godot scenes
+
+See `MCP_SETUP.md` for complete documentation.

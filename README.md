@@ -480,3 +480,14 @@ match mod.op:
 ```
 
 This system provides unlimited flexibility while maintaining clean, understandable code. Designers can create complex interactions without programming knowledge, and developers can extend the system without breaking existing content.
+
+## MCP (Model Context Protocol) Integration
+
+This project includes MCP server integration, allowing AI assistants like Claude to interact with the Godot project through standardized tools. The MCP server provides tools for:
+
+- Running tests and checking script errors
+- Managing game data (encounters, unit templates)
+- Running scenes and validating configurations
+- Exploring project structure
+
+See [MCP_SETUP.md](MCP_SETUP.md) for detailed setup instructions and available tools.
