@@ -1,0 +1,82 @@
+[gd_scene load_steps=5 format=3 uid="uid://dbv6gfhlwwq1d"]
+
+[ext_resource type="PackedScene" path="res://player_hud.tscn" id="1_hg3xm"]
+[ext_resource type="Script" uid="uid://bsan4k5p3m8x2" path="res://progression_test_scene.gd" id="1_vj4yh"]
+[ext_resource type="Script" uid="uid://hk5m4mp14mvi" path="res://encounter_manager.gd" id="2_8t7qm"]
+[ext_resource type="Script" uid="uid://c6i2chu7ubghy" path="res://auto_battler.gd" id="3_w5e8y"]
+
+[node name="ProgressionTestScene" type="Node"]
+script = ExtResource("1_vj4yh")
+
+[node name="EncounterManager" type="Node" parent="."]
+script = ExtResource("2_8t7qm")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+
+[node name="BattleBackground" type="ColorRect" parent="."]
+z_index = -1
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.15, 0.15, 0.2, 1)
+
+[node name="AutoBattler" type="Node2D" parent="."]
+script = ExtResource("3_w5e8y")
+
+[node name="PlayerHUD" parent="." instance=ExtResource("1_hg3xm")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EncounterList" type="ItemList" parent="."]
+offset_left = 50.0
+offset_top = 200.0
+offset_right = 400.0
+offset_bottom = 500.0
+
+[node name="StartButton" type="Button" parent="."]
+offset_left = 50.0
+offset_top = 520.0
+offset_right = 150.0
+offset_bottom = 550.0
+text = "Start Encounter"
+
+[node name="SaveButton" type="Button" parent="."]
+offset_left = 170.0
+offset_top = 520.0
+offset_right = 250.0
+offset_bottom = 550.0
+text = "Save Game"
+
+[node name="LoadButton" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 520.0
+offset_right = 350.0
+offset_bottom = 550.0
+text = "Load Game"
+
+[node name="AddExpButton" type="Button" parent="."]
+offset_left = 450.0
+offset_top = 200.0
+offset_right = 550.0
+offset_bottom = 230.0
+text = "+500 EXP"
+
+[node name="AddGoldButton" type="Button" parent="."]
+offset_left = 450.0
+offset_top = 240.0
+offset_right = 550.0
+offset_bottom = 270.0
+text = "+100 Gold"
+
+[node name="ResultsLabel" type="RichTextLabel" parent="."]
+offset_left = 600.0
+offset_top = 200.0
+offset_right = 1000.0
+offset_bottom = 600.0
+bbcode_enabled = true
+text = "[b]Progression Test Scene[/b]
+
+Select an encounter and press Start to begin.
+Use the test buttons to add resources."

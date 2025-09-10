@@ -15,8 +15,9 @@ A sophisticated auto battler implementation for Godot 4 that uses a data-driven 
 9. [Equipment System](#equipment-system)
 10. [AI System](#ai-system)
 11. [Encounter System](#encounter-system)
-12. [Configuration Guide](#configuration-guide)
-13. [Examples](#examples)
+12. [Player Progression System](#player-progression-system)
+13. [Configuration Guide](#configuration-guide)
+14. [Examples](#examples)
 
 ## Overview
 
@@ -601,6 +602,32 @@ match mod.op:
 
 This system provides unlimited flexibility while maintaining clean, understandable code. Designers can create complex interactions without programming knowledge, and developers can extend the system without breaking existing content.
 
+## Player Progression System
+
+The game features a comprehensive progression system that tracks player advancement through encounters:
+
+### Key Features
+- **Player Leveling**: Experience-based progression with team size unlocks
+- **Unit Progression**: Individual unit leveling, skills, and equipment  
+- **Save/Load System**: Persistent progression across sessions
+- **Reward Integration**: Automatic reward application from encounters
+- **Visual Battle System**: Animated 2D battles with unit sprites, health bars, and effects
+
+### Progression Components
+- `player_data.gd` - Player profile, unlocks, and roster management
+- `unit_data.gd` - Individual unit progression tracking
+- `progression_manager.gd` - Central progression controller (AutoLoad singleton)
+- `save_manager.gd` - Save/load functionality with JSON serialization
+- `player_hud.gd/tscn` - UI for displaying player stats and progression
+
+### Visual Battle System
+Units are displayed as colored sprites with:
+- Team-based coloring (Team 1: Cyan, Team 2: Orange)
+- Health bars and status effect indicators
+- Attack and skill animations
+- Damage number popups
+- Formation-based positioning
+
 ## Getting Started
 
 ### Requirements
@@ -610,20 +637,40 @@ This system provides unlimited flexibility while maintaining clean, understandab
 ### Quick Start
 1. Clone the repository
 2. Open the project in Godot 4
-3. Run `sample_battle.tscn` for basic combat demo
-4. Run `encounter_test.tscn` for encounter system demo
-5. Run tests with `./run_tests.sh` or open `run_all_tests.tscn` in editor
+3. Run `progression_test_scene.tscn` for full progression and visual battle system
+4. Run `visual_battle_test.tscn` for visual battle testing
+5. Run `sample_battle.tscn` for basic combat demo
+6. Run `encounter_test.tscn` for encounter system demo
+7. Run tests with `./run_tests.sh` or open `run_all_tests.tscn` in editor
+
+### Test Scenes
+- **progression_test_scene.tscn** - Full game loop with progression, encounters, and visual battles
+- **visual_battle_test.tscn** - Dedicated visual battle testing with Camera2D setup
+- **encounter_test_scene.tscn** - Encounter system testing with detailed UI
+- **sample_battle.tscn** - Basic battle mechanics demonstration
 
 ### Project Structure
 ```
 ├── core/                     # Core battle system
-│   ├── auto_battler.gd      # Main battle orchestrator
-│   ├── battle_unit.gd       # Unit class
+│   ├── auto_battler.gd      # Main battle orchestrator (Node2D with visuals)
+│   ├── battle_unit.gd       # Unit class with visual components
 │   ├── battle_skill.gd      # Skill system
-│   └── battle_ai.gd         # AI decision making
+│   ├── battle_ai.gd         # AI decision making
+│   └── unit_visual.gd       # Visual representation of units
+├── progression/              # Player progression
+│   ├── player_data.gd       # Player stats and unlocks
+│   ├── unit_data.gd         # Unit progression
+│   ├── progression_manager.gd # Progression controller
+│   └── save_manager.gd      # Save/load system
+├── encounters/               # Encounter system
+│   ├── encounter_manager.gd # Encounter orchestrator
+│   ├── encounter.gd         # Individual encounters
+│   ├── wave.gd             # Wave management
+│   └── unit_factory.gd      # Enemy generation
 ├── data/                     # JSON configuration files
 │   ├── encounters.json      # Encounter definitions
-│   └── unit_templates.json  # Enemy templates
+│   ├── unit_templates.json  # Enemy and player unit templates
+│   └── battle_rules.json    # Combat rules and modifiers
 ├── tests/                    # Unit and integration tests
 ├── addons/gut/              # Testing framework
 └── scenes/                   # Demo and test scenes

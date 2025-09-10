@@ -10,7 +10,7 @@ extends RefCounted
 @export var resource_cost: float = 0.0
 @export var resource_type: String = "mana"
 
-var last_used_time: float = -999999.0  # Set to very far in the past
+var last_used_time: float = 0.0
 
 func is_on_cooldown() -> bool:
     if cooldown <= 0:

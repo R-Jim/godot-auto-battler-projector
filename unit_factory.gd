@@ -46,14 +46,13 @@ static func create_from_template(template_id: String, level: int, team: int, dif
 	var stat_modifiers = template.get("stat_modifiers", {})
 	var level_scaling = template.get("level_scaling", {})
 	
-	unit.stats = {
-		"health": _calculate_stat(base_stats.get("health", 100.0), stat_modifiers.get("health", 1.0), level, level_scaling.get("health", 0.1)),
-		"max_health": _calculate_stat(base_stats.get("health", 100.0), stat_modifiers.get("health", 1.0), level, level_scaling.get("health", 0.1)),
-		"attack": _calculate_stat(base_stats.get("attack", 10.0), stat_modifiers.get("attack", 1.0), level, level_scaling.get("attack", 0.08)),
-		"defense": _calculate_stat(base_stats.get("defense", 5.0), stat_modifiers.get("defense", 1.0), level, level_scaling.get("defense", 0.06)),
-		"speed": _calculate_stat(base_stats.get("speed", 5.0), stat_modifiers.get("speed", 1.0), level, level_scaling.get("speed", 0.04)),
-		"initiative": 0.0
-	}
+	# Update stats instead of replacing the dictionary
+	unit.stats.health = _calculate_stat(base_stats.get("health", 100.0), stat_modifiers.get("health", 1.0), level, level_scaling.get("health", 0.1))
+	unit.stats.max_health = unit.stats.health
+	unit.stats.attack = _calculate_stat(base_stats.get("attack", 10.0), stat_modifiers.get("attack", 1.0), level, level_scaling.get("attack", 0.08))
+	unit.stats.defense = _calculate_stat(base_stats.get("defense", 5.0), stat_modifiers.get("defense", 1.0), level, level_scaling.get("defense", 0.06))
+	unit.stats.speed = _calculate_stat(base_stats.get("speed", 5.0), stat_modifiers.get("speed", 1.0), level, level_scaling.get("speed", 0.04))
+	unit.stats.initiative = 0.0
 	
 	if "mana" in base_stats:
 		unit.stats["mana"] = _calculate_stat(base_stats.get("mana", 50.0), stat_modifiers.get("mana", 1.0), level, level_scaling.get("mana", 0.08))

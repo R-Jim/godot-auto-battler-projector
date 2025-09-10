@@ -1,12 +1,30 @@
 # AGENTS.md - Godot 4 GDScript Project
 
+## Player Progression System
+The game features a comprehensive progression system that tracks player advancement through encounters:
+- **Player Leveling**: XP-based progression with team size unlocks
+- **Unit Progression**: Individual unit leveling, skills, and equipment
+- **Save/Load System**: Persistent progression across sessions
+- **Reward Integration**: Automatic reward application from encounters
+
+### Progression Files:
+- `player_data.gd` - Player profile and unlocks
+- `unit_data.gd` - Individual unit progression
+- `progression_manager.gd` - Central progression controller (AutoLoad)
+- `save_manager.gd` - Save/load functionality
+- `player_hud.gd/tscn` - UI for displaying progression
+
+### Test Scene:
+- Run `progression_test_scene.tscn` to test the progression system
+
 ## Encounter System Overview
-The game now includes a comprehensive encounter system that manages battles across multiple waves. Key features:
+The game includes a comprehensive encounter system that manages battles across multiple waves. Key features:
 - **Wave-based battles**: Each encounter consists of multiple waves of enemies
 - **Dynamic difficulty**: Adjustable difficulty modes with adaptive scaling
 - **JSON configuration**: All encounters and enemy templates defined in data files
 - **Rewards system**: Experience, gold, items, and unlockables
 - **Environment modifiers**: Encounter-specific battle rules
+- **Progression Integration**: Automatic XP distribution and reward application
 
 ### Key Files:
 - `encounter_manager.gd` - Main encounter orchestrator
@@ -16,10 +34,11 @@ The game now includes a comprehensive encounter system that manages battles acro
 - `difficulty_scaler.gd` - Difficulty scaling system
 - `encounter_rewards.gd` - Rewards and progression system
 - `data/encounters.json` - Encounter definitions
-- `data/unit_templates.json` - Enemy unit templates
+- `data/unit_templates.json` - Enemy unit templates (includes player units)
 
 ### Test Scene:
 - Run `encounter_test.tscn` to test the encounter system
+- Run `progression_test_scene.tscn` to test progression with encounters
 
 ## Build/Test Commands
 - **Run tests**: `./run_tests.sh` or `godot --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -gexit`

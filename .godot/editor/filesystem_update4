@@ -12,3 +12,10 @@ res://battle_unit.gd
 res://encounter_manager.gd
 res://encounter_test_scene.gd
 res://battle_rule_processor.gd
+res://sample_battle.gd
+res://progression_test_scene.tscn
+res://player_data.gd
+res://player_hud.gd
+res://progression_manager.gd
+res://progression_test_scene.gd
+res://unit_data.gd

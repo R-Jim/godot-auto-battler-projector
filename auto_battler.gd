@@ -1,5 +1,7 @@
 class_name AutoBattler
-extends Node
+extends Node2D
+
+const UnitVisual = preload("res://unit_visual.gd")
 
 signal battle_started
 signal battle_ended(winner_team: int)
@@ -37,6 +39,21 @@ func start_battle(_team1: Array[BattleUnit], _team2: Array[BattleUnit]) -> void:
     team1 = _team1
     team2 = _team2
     
+    # Add units to scene tree and create visuals
+    for i in range(team1.size()):
+        var unit = team1[i]
+        add_child(unit)
+        _setup_unit_visual(unit)
+        # Position team1 units on the left
+        unit.position = Vector2(100, 100 + i * 120)
+        
+    for i in range(team2.size()):
+        var unit = team2[i]
+        add_child(unit)
+        _setup_unit_visual(unit)
+        # Position team2 units on the right
+        unit.position = Vector2(700, 100 + i * 120)
+    
     for unit in team1 + team2:
         unit.unit_died.connect(_on_unit_died.bind(unit))
     
@@ -51,6 +68,15 @@ func stop_battle() -> void:
     is_battle_active = false
     turn_queue.clear()
     active_unit = null
+
+func _setup_unit_visual(unit: BattleUnit) -> void:
+    # Create and attach visual component if not present
+    var visual = unit.get_node_or_null("UnitVisual")
+    if not visual:
+        visual = UnitVisual.new()
+        visual.name = "UnitVisual"
+        unit.add_child(visual)
+        visual.setup(unit)
 
 func _start_round() -> void:
     if not is_battle_active:
@@ -200,11 +226,11 @@ func _process_status_effects(unit: BattleUnit) -> void:
         unit.remove_status_effect(status)
 
 func _check_battle_end() -> bool:
-    var team1_alive = team1.filter(func(u): return u.is_alive()).size() > 0
-    var team2_alive = team2.filter(func(u): return u.is_alive()).size() > 0
+    var team1_alive_count = team1.filter(func(u): return u.is_alive()).size()
+    var team2_alive_count = team2.filter(func(u): return u.is_alive()).size()
     
-    if not team1_alive or not team2_alive:
-        var winner = 1 if team1_alive else 2
+    if team1_alive_count == 0 or team2_alive_count == 0:
+        var winner = 1 if team1_alive_count > 0 else 2
         _end_battle(winner)
         return true
     

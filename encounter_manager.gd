@@ -23,12 +23,16 @@ var available_encounters: Dictionary = {}
 var completed_encounters: Array[String] = []
 var unlocked_encounters: Array[String] = []
 var player_data: Dictionary = {}
+var progression_manager: Node
 
 var auto_battler: AutoBattler
 var is_encounter_active: bool = false
 
 func set_auto_battler(battler: AutoBattler) -> void:
     auto_battler = battler
+
+func set_progression_manager(manager: Node) -> void:
+    progression_manager = manager
 var wave_results: Array[Dictionary] = []
 var encounter_start_time: float = 0.0
 var perfect_waves: int = 0
@@ -77,7 +81,7 @@ func load_encounters() -> void:
         
         print("Loaded ", available_encounters.size(), " encounters")
 
-func start_encounter(encounter_id: String, team: Array[BattleUnit]) -> bool:
+func start_encounter(encounter_id: String, team: Array[BattleUnit] = []) -> bool:
     if is_encounter_active:
         push_error("An encounter is already active!")
         return false
@@ -88,11 +92,26 @@ func start_encounter(encounter_id: String, team: Array[BattleUnit]) -> bool:
     
     current_encounter = available_encounters[encounter_id]
     
-    if not current_encounter.is_unlocked(player_data):
-        push_error("Encounter is locked: " + encounter_id)
+    if progression_manager:
+        if not progression_manager.player_data.can_play_encounter(current_encounter):
+            push_error("Encounter is locked: " + encounter_id)
+            return false
+        
+        if team.is_empty():
+            player_team = progression_manager.create_battle_units_from_team()
+        else:
+            player_team = team
+    else:
+        if not current_encounter.is_unlocked(player_data):
+            push_error("Encounter is locked: " + encounter_id)
+            return false
+        
+        player_team = team
+    
+    if player_team.is_empty():
+        push_error("No player team provided!")
         return false
     
-    player_team = team
     current_wave_index = -1
     is_encounter_active = true
     wave_results.clear()
@@ -239,9 +258,15 @@ func _complete_encounter(victory: bool) -> void:
         encounter_history.append(current_encounter.encounter_id)
         completed_encounters.append(current_encounter.encounter_id)
         
-        for next_id in current_encounter.next_encounters:
-            if next_id not in unlocked_encounters:
-                unlocked_encounters.append(next_id)
+        if progression_manager:
+            progression_manager.player_data.complete_encounter(current_encounter.encounter_id)
+            
+            for next_id in current_encounter.next_encounters:
+                progression_manager.player_data.unlock_encounter(next_id)
+        else:
+            for next_id in current_encounter.next_encounters:
+                if next_id not in unlocked_encounters:
+                    unlocked_encounters.append(next_id)
         
         var score = _calculate_score(completion_time)
         total_score += score
@@ -259,6 +284,12 @@ func _complete_encounter(victory: bool) -> void:
         var difficulty_multiplier = DifficultyScaler.get_difficulty_modifiers(difficulty_mode, 0).reward_multiplier
         total_rewards.apply_performance_multiplier(difficulty_multiplier)
         
+        if progression_manager:
+            progression_manager.apply_encounter_rewards(total_rewards)
+            
+            var unit_exp = total_rewards.experience / 2
+            progression_manager.distribute_unit_experience(player_team, unit_exp)
+        
         session_stats.encounters_completed += 1
         campaign_progress_updated.emit(completed_encounters)
     else:
@@ -266,6 +297,10 @@ func _complete_encounter(victory: bool) -> void:
         encounter_failed.emit("Team was defeated")
         
         total_rewards.apply_performance_multiplier(0.2)
+        
+        if progression_manager and total_rewards.experience > 0:
+            var reduced_exp = total_rewards.experience / 10
+            progression_manager.distribute_unit_experience(player_team, reduced_exp)
     
     all_waves_completed.emit()
     encounter_completed.emit(current_encounter, victory, total_rewards)

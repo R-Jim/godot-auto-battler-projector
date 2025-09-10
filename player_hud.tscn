@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4kxj7h8y2n5m"]
+
+[ext_resource type="Script" path="res://player_hud.gd" id="1_xqv8p"]
+
+[node name="PlayerHUD" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_xqv8p")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="TopBar" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="LevelLabel" type="Label" parent="VBoxContainer/TopBar"]
+layout_mode = 0
+anchor_left = 0.05
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -11.0
+offset_right = 100.0
+offset_bottom = 11.0
+text = "Level 1"
+
+[node name="ExpBar" type="ProgressBar" parent="VBoxContainer/TopBar"]
+layout_mode = 0
+anchor_left = 0.15
+anchor_top = 0.5
+anchor_right = 0.4
+anchor_bottom = 0.5
+offset_top = -10.0
+offset_bottom = 10.0
+value = 0.0
+
+[node name="GoldLabel" type="Label" parent="VBoxContainer/TopBar"]
+layout_mode = 0
+anchor_left = 0.85
+anchor_top = 0.5
+anchor_right = 0.95
+anchor_bottom = 0.5
+offset_top = -11.0
+offset_bottom = 11.0
+text = "Gold: 0"
+horizontal_alignment = 2
+
+[node name="TeamContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="HSpacer" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
