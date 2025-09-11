@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dbv6gfhlwwq1d"]
 
-[ext_resource type="PackedScene" path="res://player_hud.tscn" id="1_hg3xm"]
+[ext_resource type="PackedScene" uid="uid://b4kxj7h8y2n5m" path="res://player_hud.tscn" id="1_hg3xm"]
 [ext_resource type="Script" uid="uid://bsan4k5p3m8x2" path="res://progression_test_scene.gd" id="1_vj4yh"]
 [ext_resource type="Script" uid="uid://hk5m4mp14mvi" path="res://encounter_manager.gd" id="2_8t7qm"]
 [ext_resource type="Script" uid="uid://c6i2chu7ubghy" path="res://auto_battler.gd" id="3_w5e8y"]
