@@ -18,36 +18,37 @@ var stats: Dictionary = {
     "initiative": 0.0
 }
 
-var projectors: Dictionary = {}
+var stat_projectors: Dictionary = {}
 var skills: Array[BattleSkill] = []
 var status_effects: Array[StatusEffect] = []
 var equipment: Dictionary = {}
+var locked_resources: Dictionary = {}  # Track reserved resources for pending skill casts
 
 func _init() -> void:
-    # Initialize projectors in _init so they're available before _ready
-    for stat_name in stats.keys():
-        projectors[stat_name] = PropertyProjector.new()
+	# Initialize stat projectors in _init so they're available before _ready
+	for stat_name in stats.keys():
+		stat_projectors[stat_name] = StatProjector.new()
 
 func _ready() -> void:
-    # Initialize any missing projectors (for dynamically added stats like mana)
-    for stat_name in stats.keys():
-        if not projectors.has(stat_name):
-            projectors[stat_name] = PropertyProjector.new()
-    
-    # Connect signals after node is in tree
-    for stat_name in stats.keys():
-        projectors[stat_name].connect("projection_changed", _on_projection_changed.bind(stat_name))
+	# Initialize any missing stat projectors (for dynamically added stats like mana)
+	for stat_name in stats.keys():
+		if not stat_projectors.has(stat_name):
+			stat_projectors[stat_name] = StatProjector.new()
+	
+	# Connect signals after node is in tree
+	for stat_name in stats.keys():
+		stat_projectors[stat_name].connect("stat_calculation_changed", _on_stat_calculation_changed.bind(stat_name))
     
     recalculate_stats()
 
-func _on_projection_changed(payload: Dictionary, stat_name: String) -> void:
-    stat_changed.emit(stat_name, get_projected_stat(stat_name))
+func _on_stat_calculation_changed(payload: Dictionary, stat_name: String) -> void:
+	stat_changed.emit(stat_name, get_projected_stat(stat_name))
 
 func get_projected_stat(stat_name: String) -> float:
-    if not projectors.has(stat_name):
-        push_error("Unknown stat: " + stat_name)
-        return 0.0
-    return projectors[stat_name].get_projected_value(stats.get(stat_name, 0.0))
+	if not stat_projectors.has(stat_name):
+		push_error("Unknown stat: " + stat_name)
+		return 0.0
+	return stat_projectors[stat_name].calculate_stat(stats.get(stat_name, 0.0))
 
 func take_damage(amount: float) -> void:
     var actual_damage = amount
@@ -132,3 +133,26 @@ func roll_initiative() -> float:
     var speed = get_projected_stat("speed")
     stats.initiative = speed + randf_range(0, 2)
     return stats.initiative
+
+func lock_resource(resource_type: String, amount: float) -> void:
+    if not locked_resources.has(resource_type):
+        locked_resources[resource_type] = 0.0
+    locked_resources[resource_type] += amount
+
+func unlock_resource(resource_type: String, amount: float) -> void:
+    if not locked_resources.has(resource_type):
+        return
+    locked_resources[resource_type] = max(0.0, locked_resources[resource_type] - amount)
+    if locked_resources[resource_type] <= 0:
+        locked_resources.erase(resource_type)
+
+func get_locked_resource(resource_type: String) -> float:
+    return locked_resources.get(resource_type, 0.0)
+
+func get_available_resource(resource_type: String) -> float:
+    var total = stats.get(resource_type, 0.0)
+    var locked = get_locked_resource(resource_type)
+    return total - locked
+
+func clear_locked_resources() -> void:
+    locked_resources.clear()

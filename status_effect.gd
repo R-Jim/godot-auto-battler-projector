@@ -58,7 +58,7 @@ func apply_to(unit: BattleUnit) -> void:
     var modifiers = rule_processor.get_modifiers_for_context(context)
     
     for mod in modifiers:
-        if not mod is PropertyProjector.Modifier:
+        if not mod is StatProjector.StatModifier:
             push_error("Invalid modifier type from rule processor: " + str(typeof(mod)))
             continue
             
@@ -70,9 +70,9 @@ func apply_to(unit: BattleUnit) -> void:
             applies_to = ["attack"]
         
         for stat_name in applies_to:
-            if unit.projectors.has(stat_name):
-                unit.projectors[stat_name].add_modifier(mod)
-                if not mod is PropertyProjector.Modifier:
+            if unit.stat_projectors.has(stat_name):
+                unit.stat_projectors[stat_name].add_modifier(mod)
+                if not mod is StatProjector.StatModifier:
                     push_error("Trying to store non-Modifier in applied_modifiers: " + str(typeof(mod)))
                 applied_modifiers.append({"modifier": mod, "stat": stat_name})
     
@@ -88,12 +88,12 @@ func remove_from(unit: BattleUnit) -> void:
         var modifier = mod_data["modifier"]
         
         # Skip if modifier was serialized as a dictionary or is otherwise invalid
-        if not modifier is PropertyProjector.Modifier:
+        if not modifier is StatProjector.StatModifier:
             push_warning("Skipping non-Modifier object in applied_modifiers: " + str(typeof(modifier)))
             continue
             
-        if unit.projectors.has(stat_name):
-            unit.projectors[stat_name].remove_modifier(modifier)
+        if unit.stat_projectors.has(stat_name):
+            unit.stat_projectors[stat_name].remove_modifier(modifier)
     
     applied_modifiers.clear()
     unit.recalculate_stats()

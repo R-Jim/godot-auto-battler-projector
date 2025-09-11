@@ -440,7 +440,7 @@ func _on_continue_pressed() -> void:
         
         # Restore mana if applicable
         if "mana" in unit.stats:
-            unit.stats.mana = unit.get_projected_stat("max_mana") if unit.projectors.has("max_mana") else unit.stats.max_mana
+            unit.stats.mana = unit.get_projected_stat("max_mana") if unit.stat_projectors.has("max_mana") else unit.stats.max_mana
         
         # Clear any status effects
         unit.clear_status_effects()

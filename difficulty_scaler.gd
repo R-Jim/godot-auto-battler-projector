@@ -119,50 +119,50 @@ static func get_adaptive_modifiers(player_performance: Dictionary) -> Dictionary
 
 static func apply_difficulty_to_unit(unit: BattleUnit, modifiers: Dictionary) -> void:
     if "enemy_health" in modifiers:
-        var health_mod = PropertyProjector.Modifier.new(
+        var health_mod = StatProjector.StatModifier.new(
             "difficulty_health",
-            PropertyProjector.Modifier.Op.MUL,
+            StatProjector.StatModifier.Op.MUL,
             modifiers.enemy_health,
             5,
             ["max_health", "health"],
             -1.0  # No expiration
         )
-        unit.projectors["max_health"].add_modifier(health_mod)
-        unit.projectors["health"].add_modifier(health_mod)
+        unit.stat_projectors["max_health"].add_modifier(health_mod)
+        unit.stat_projectors["health"].add_modifier(health_mod)
         unit.stats.health = unit.get_projected_stat("max_health")
     
     if "enemy_damage" in modifiers:
-        var damage_mod = PropertyProjector.Modifier.new(
+        var damage_mod = StatProjector.StatModifier.new(
             "difficulty_damage",
-            PropertyProjector.Modifier.Op.MUL,
+            StatProjector.StatModifier.Op.MUL,
             modifiers.enemy_damage,
             5,
             ["attack"],
             -1.0  # No expiration
         )
-        unit.projectors["attack"].add_modifier(damage_mod)
+        unit.stat_projectors["attack"].add_modifier(damage_mod)
     
     if "enemy_defense" in modifiers:
-        var defense_mod = PropertyProjector.Modifier.new(
+        var defense_mod = StatProjector.StatModifier.new(
             "difficulty_defense",
-            PropertyProjector.Modifier.Op.MUL,
+            StatProjector.StatModifier.Op.MUL,
             modifiers.enemy_defense,
             5,
             ["defense"],
             -1.0  # No expiration
         )
-        unit.projectors["defense"].add_modifier(defense_mod)
+        unit.stat_projectors["defense"].add_modifier(defense_mod)
     
     if "enemy_speed" in modifiers:
-        var speed_mod = PropertyProjector.Modifier.new(
+        var speed_mod = StatProjector.StatModifier.new(
             "difficulty_speed",
-            PropertyProjector.Modifier.Op.MUL,
+            StatProjector.StatModifier.Op.MUL,
             modifiers.enemy_speed,
             5,
             ["speed"],
             -1.0  # No expiration
         )
-        unit.projectors["speed"].add_modifier(speed_mod)
+        unit.stat_projectors["speed"].add_modifier(speed_mod)
 
 static func get_difficulty_name(mode: DifficultyMode) -> String:
     match mode:

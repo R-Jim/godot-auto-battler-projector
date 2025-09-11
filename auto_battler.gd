@@ -197,22 +197,22 @@ func _execute_basic_attack(attacker: BattleUnit, target: BattleUnit) -> void:
 func _execute_defend(unit: BattleUnit) -> void:
     action_performed.emit(unit, {"type": "defend"})
     
-    var defense_mod = PropertyProjector.Modifier.new(
+    var defense_mod = StatProjector.StatModifier.new(
         "defend_action",
-        PropertyProjector.Modifier.Op.MUL,
+        StatProjector.StatModifier.Op.MUL,
         1.5,
         50,
         ["defense"],
         Time.get_unix_time_from_system() + 1.0
     )
-    unit.projectors["defense"].add_modifier(defense_mod)
+    unit.stat_projectors["defense"].add_modifier(defense_mod)
     
     await get_tree().create_timer(0.2).timeout
 
 func _process_status_effects(unit: BattleUnit) -> void:
     var now = Time.get_unix_time_from_system()
     
-    for projector in unit.projectors.values():
+    for projector in unit.stat_projectors.values():
         projector.prune_expired(now)
     
     var to_remove: Array[StatusEffect] = []

@@ -9,6 +9,7 @@ extends RefCounted
 @export var cooldown: float = 0.0
 @export var resource_cost: float = 0.0
 @export var resource_type: String = "mana"
+@export var cast_time: float = 0.0
 
 var last_used_time: float = 0.0
 
@@ -23,7 +24,10 @@ func can_use(caster: BattleUnit) -> bool:
         return false
     
     if resource_cost > 0:
-        if not caster.stats.has(resource_type) or caster.stats[resource_type] < resource_cost:
+        if not caster.stats.has(resource_type):
+            return false
+        var available = caster.get_available_resource(resource_type)
+        if available < resource_cost:
             return false
     
     return true
@@ -37,35 +41,51 @@ func get_unusable_reason(caster: BattleUnit) -> String:
     if resource_cost > 0:
         if not caster.stats.has(resource_type):
             return "caster missing resource type '%s'" % resource_type
-        var current_resource = caster.stats[resource_type]
-        if current_resource < resource_cost:
-            return "insufficient %s (%.0f/%.0f)" % [resource_type, current_resource, resource_cost]
+        var available = caster.get_available_resource(resource_type)
+        var locked = caster.get_locked_resource(resource_type)
+        if available < resource_cost:
+            if locked > 0:
+                return "insufficient %s (%.0f/%.0f available, %.0f locked)" % [resource_type, available, resource_cost, locked]
+            else:
+                return "insufficient %s (%.0f/%.0f)" % [resource_type, available, resource_cost]
     
     return ""
 
 func use(caster: BattleUnit) -> void:
-    # Mark skill as used and consume resources
+    # Legacy method - now just marks skill as used for backward compatibility
+    # Actual resource handling should go through SkillCast
     if not can_use(caster):
         var reason = get_unusable_reason(caster)
         push_error("BattleSkill: Cannot use '%s' - %s" % [skill_name, reason])
         return
     
+    # For backward compatibility - immediate execution without cast system
     if resource_cost > 0 and caster.stats.has(resource_type):
-        caster.stats[resource_type] -= resource_cost
-        caster.stat_changed.emit(resource_type, caster.stats[resource_type])
+        var available = caster.get_available_resource(resource_type)
+        if available >= resource_cost:
+            caster.stats[resource_type] -= resource_cost
+            caster.stat_changed.emit(resource_type, caster.stats[resource_type])
+        else:
+            push_error("BattleSkill: Race condition detected - resource no longer available")
+            return
     
+    # Always set last_used_time if we successfully use the skill
     last_used_time = Time.get_unix_time_from_system()
+
+func prepare_cast(caster: BattleUnit) -> SkillCast:
+    var cast = SkillCast.new(self, caster)
+    return cast
 
 func execute_on_target(caster: BattleUnit, target: BattleUnit, rule_processor: BattleRuleProcessor) -> void:
     # Execute the skill effect on a specific target (no cooldown/resource check)
     var context = _build_context(caster, target)
     var contextual_modifiers = rule_processor.get_modifiers_for_context(context)
     
-    var damage_projector = PropertyProjector.new()
+    var damage_projector = StatProjector.new()
     
-    if caster.projectors.has("attack"):
-        for mod in caster.projectors["attack"].list_modifiers():
-            var new_mod = PropertyProjector.Modifier.new(
+    if caster.stat_projectors.has("attack"):
+        for mod in caster.stat_projectors["attack"].list_modifiers():
+            var new_mod = StatProjector.StatModifier.new(
                 mod.id,
                 mod.op,
                 mod.value,
@@ -76,20 +96,22 @@ func execute_on_target(caster: BattleUnit, target: BattleUnit, rule_processor: B
             damage_projector.add_modifier(new_mod)
     
     for mod in contextual_modifiers:
-        if mod is PropertyProjector.Modifier:
+        if mod is StatProjector.StatModifier:
             damage_projector.add_modifier(mod)
         else:
             push_error("Invalid modifier type in contextual_modifiers: " + str(typeof(mod)))
     
-    var final_damage = damage_projector.get_projected_value(base_damage)
+    var final_damage = damage_projector.calculate_stat(base_damage)
     
     _apply_effects(caster, target, final_damage)
 
 func execute(caster: BattleUnit, target: BattleUnit, rule_processor: BattleRuleProcessor) -> void:
-    # Legacy method for single-target skills
+    # Legacy method for single-target skills - uses immediate execution
+    if not can_use(caster):
+        return
+    
     use(caster)
-    if can_use(caster) or last_used_time == Time.get_unix_time_from_system():
-        execute_on_target(caster, target, rule_processor)
+    execute_on_target(caster, target, rule_processor)
 
 func _build_context(caster: BattleUnit, target: BattleUnit) -> Dictionary:
     return {
@@ -157,4 +179,5 @@ func clone() -> BattleSkill:
     new_skill.cooldown = cooldown
     new_skill.resource_cost = resource_cost
     new_skill.resource_type = resource_type
+    new_skill.cast_time = cast_time
     return new_skill
