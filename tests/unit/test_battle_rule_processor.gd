@@ -7,15 +7,15 @@ func before_each():
 	processor.rules = []  # Clear rules to avoid file loading
 
 func test_string_to_op():
-	assert_eq(processor._string_to_op("ADD"), PropertyProjector.Modifier.Op.ADD)
-	assert_eq(processor._string_to_op("add"), PropertyProjector.Modifier.Op.ADD)
-	assert_eq(processor._string_to_op("MUL"), PropertyProjector.Modifier.Op.MUL)
-	assert_eq(processor._string_to_op("mul"), PropertyProjector.Modifier.Op.MUL)
-	assert_eq(processor._string_to_op("SET"), PropertyProjector.Modifier.Op.SET)
-	assert_eq(processor._string_to_op("set"), PropertyProjector.Modifier.Op.SET)
+	assert_eq(processor._string_to_op("ADD"), StatProjector.StatModifier.Op.ADD)
+	assert_eq(processor._string_to_op("add"), StatProjector.StatModifier.Op.ADD)
+	assert_eq(processor._string_to_op("MUL"), StatProjector.StatModifier.Op.MUL)
+	assert_eq(processor._string_to_op("mul"), StatProjector.StatModifier.Op.MUL)
+	assert_eq(processor._string_to_op("SET"), StatProjector.StatModifier.Op.SET)
+	assert_eq(processor._string_to_op("set"), StatProjector.StatModifier.Op.SET)
 	
 	# Unknown op defaults to ADD
-	assert_eq(processor._string_to_op("unknown"), PropertyProjector.Modifier.Op.ADD)
+	assert_eq(processor._string_to_op("unknown"), StatProjector.StatModifier.Op.ADD)
 
 func test_create_modifier_from_data():
 	var mod_data = {
@@ -29,7 +29,7 @@ func test_create_modifier_from_data():
 	var modifier = processor._create_modifier_from_data(mod_data)
 	assert_not_null(modifier)
 	assert_eq(modifier.id, "test_mod")
-	assert_eq(modifier.op, PropertyProjector.Modifier.Op.ADD)
+	assert_eq(modifier.op, StatProjector.StatModifier.Op.ADD)
 	assert_eq(modifier.value, 10.0)
 	assert_eq(modifier.priority, 5)
 	assert_eq(modifier.applies_to, ["attack", "defense"])

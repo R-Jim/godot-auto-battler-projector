@@ -147,7 +147,7 @@ func test_complex_battle_scenario():
     
     # Add mana to unit1
     unit1.stats["mana"] = 50.0
-    unit1.projectors["mana"] = PropertyProjector.new()
+    unit1.stat_projectors["mana"] = StatProjector.new()
     
     # Execute skill
     var unit2_defense = unit2.get_projected_stat("defense")
@@ -218,8 +218,8 @@ func test_status_effect_expiration():
 
 func test_battle_turn_order():
     # Set different speeds
-    unit1.projectors["speed"].add_additive("buff", 5.0)  # Speed 10
-    unit2.projectors["speed"].add_additive("debuff", -2.0)  # Speed 3
+    unit1.stat_projectors["speed"].add_flat_modifier("buff", 5.0)  # Speed 10
+    unit2.stat_projectors["speed"].add_flat_modifier("debuff", -2.0)  # Speed 3
     
     # Roll initiative
     var init1 = unit1.roll_initiative()

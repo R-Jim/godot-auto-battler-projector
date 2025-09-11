@@ -63,7 +63,7 @@ func test_can_use_with_resource_cost():
 	
 	# Add mana to caster's stats
 	caster.stats["mana"] = 50.0
-	caster.projectors["mana"] = PropertyProjector.new()
+	caster.stat_projectors["mana"] = StatProjector.new()
 	
 	battle_skill.resource_cost = 30.0
 	assert_true(battle_skill.can_use(caster))

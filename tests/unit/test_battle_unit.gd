@@ -21,16 +21,16 @@ func test_initial_stats():
 
 func test_projectors_created_for_each_stat():
     for stat_name in battle_unit.stats.keys():
-        assert_true(battle_unit.projectors.has(stat_name))
-        assert_not_null(battle_unit.projectors[stat_name])
-        assert_true(battle_unit.projectors[stat_name] is PropertyProjector)
+        assert_true(battle_unit.stat_projectors.has(stat_name))
+        assert_not_null(battle_unit.stat_projectors[stat_name])
+        assert_true(battle_unit.stat_projectors[stat_name] is StatProjector)
 
 func test_get_projected_stat():
     var attack = battle_unit.get_projected_stat("attack")
     assert_eq(attack, 10.0)
     
     # Add modifier and check projection
-    battle_unit.projectors["attack"].add_additive("buff", 5.0)
+    battle_unit.stat_projectors["attack"].add_flat_modifier("buff", 5.0)
     attack = battle_unit.get_projected_stat("attack")
     assert_eq(attack, 15.0)
 
@@ -46,7 +46,7 @@ func test_take_damage():
 
 func test_take_damage_minimum():
     # Even with high defense, minimum damage is 1
-    battle_unit.projectors["defense"].add_additive("armor", 1000.0)
+    battle_unit.stat_projectors["defense"].add_flat_modifier("armor", 1000.0)
     battle_unit.take_damage(10.0)
     assert_eq(battle_unit.stats.health, 99.0)
 
@@ -68,7 +68,7 @@ func test_heal_capped_by_max_health():
     assert_eq(battle_unit.stats.health, 100.0)
 
 func test_heal_respects_projected_max_health():
-    battle_unit.projectors["max_health"].add_additive("buff", 50.0)
+    battle_unit.stat_projectors["max_health"].add_flat_modifier("buff", 50.0)
     battle_unit.stats.health = 100.0
     battle_unit.heal(30.0)
     assert_eq(battle_unit.stats.health, 130.0)
@@ -159,8 +159,8 @@ func test_unequip_nonexistent_slot():
     assert_true(true)
 
 func test_recalculate_stats():
-    battle_unit.projectors["attack"].add_additive("buff", 10.0)
-    battle_unit.projectors["defense"].add_multiplier("debuff", 0.5)
+    battle_unit.stat_projectors["attack"].add_flat_modifier("buff", 10.0)
+    battle_unit.stat_projectors["defense"].add_percentage_modifier("debuff", 0.5)
     
     # Track which stats were updated
     var updated_stats = {}
@@ -183,12 +183,12 @@ func test_get_health_percentage():
     assert_eq(battle_unit.get_health_percentage(), 0.0)  # 0/100
 
 func test_get_health_percentage_with_modified_max():
-    battle_unit.projectors["max_health"].add_additive("buff", 100.0)
+    battle_unit.stat_projectors["max_health"].add_flat_modifier("buff", 100.0)
     battle_unit.stats.health = 150.0
     assert_eq(battle_unit.get_health_percentage(), 0.75)  # 150/200
 
 func test_get_health_percentage_zero_max():
-    battle_unit.projectors["max_health"].add_set("curse", 0.0, 100)
+    battle_unit.stat_projectors["max_health"].set_override("curse", 0.0, 100)
     assert_eq(battle_unit.get_health_percentage(), 0.0)
 
 func test_is_alive():
@@ -224,7 +224,7 @@ func test_projection_changed_signal():
     watch_signals(battle_unit)
     
     # Add a modifier which should trigger the signal chain
-    battle_unit.projectors["attack"].add_additive("buff", 10.0)
+    battle_unit.stat_projectors["attack"].add_flat_modifier("buff", 10.0)
     
     # The stat_changed signal should have been emitted by the battle unit
     assert_signal_emitted(battle_unit, "stat_changed")
@@ -243,7 +243,7 @@ func test_complex_battle_scenario():
     var buff = StatusEffect.new("strength", "Strength", "Increases attack", 10.0)
     # Manually add modifier since we can't use RuleProcessor in unit test
     # Use priority 5 (lower than equipment's 10) so multiplication happens after addition
-    battle_unit.projectors["attack"].add_multiplier("strength_buff", 1.5, 5, ["attack"], buff.expires_at)
+    battle_unit.stat_projectors["attack"].add_percentage_modifier("strength_buff", 1.5, 5, ["attack"], buff.expires_at)
     battle_unit.add_status_effect(buff)
     
     # Verify stats
