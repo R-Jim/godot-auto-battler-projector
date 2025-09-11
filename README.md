@@ -35,7 +35,7 @@ This auto battler uses a unique architecture that combines:
 
 ## Core Systems
 
-### 1. Property Projection System (`property_projectors_v9.gd`)
+### 1. Property Projection System (`property_projectors.gd`)
 
 The heart of the stat calculation system. Every stat (health, attack, defense, etc.) has its own PropertyProjector that manages modifiers.
 
