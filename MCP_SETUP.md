@@ -7,12 +7,13 @@ This project includes an MCP server that allows AI assistants like OpenCode and 
 The MCP server provides the following tools:
 
 ### Testing & Validation
-- **run_tests**: Run GUT unit tests with optional filtering
-- **check_script_errors**: Check all GDScript files for syntax errors
+- **run_tests**: Run GUT unit tests with optional filtering (auto-cleanup after completion)
+- **check_script_errors**: Check all GDScript files for syntax errors (runs with --quit flag)
 - **validate_battle_rules**: Validate the battle rules configuration
 
 ### Scene Management
-- **run_scene**: Run specific Godot scenes with timeout control
+- **run_scene**: Run specific Godot scenes with timeout control (max 300 seconds)
+- **cleanup_processes**: Manually clean up any lingering Godot processes
 
 ### Data Management
 - **get_encounter_data**: View all encounter configurations
@@ -175,6 +176,17 @@ In OpenCode or Claude Desktop, you can use natural language to interact with you
 1. Make sure you activated the virtual environment
 2. Re-run `pip install -r requirements.txt`
 3. Check Python version is 3.10+
+
+### Memory leaks or lingering processes
+The MCP server now includes comprehensive process cleanup to prevent memory leaks:
+- All Godot processes are terminated after command completion
+- Process tracking ensures all spawned processes are monitored
+- Timeout handling with forced termination for stuck processes
+- Process groups are used to ensure child processes are also terminated
+- Manual cleanup available via the `cleanup_processes` tool
+- Cleanup scripts: `./cleanup_godot.sh` for aggressive manual cleanup
+- Enhanced test runner script with automatic cleanup on exit
+- Signal handlers ensure cleanup on interruption (Ctrl+C)
 
 Note: The "Import could not be resolved" error in your editor is normal before running the setup script. The MCP package will be installed in the virtual environment when you run `./setup_mcp.sh`.
 
