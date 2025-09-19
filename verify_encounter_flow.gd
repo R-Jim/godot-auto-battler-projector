@@ -23,8 +23,8 @@ func _ready() -> void:
 	add_child(auto_battler)
 	
 	# Create teams
-	var team1 = [team1_unit]
-	var team2 = [team2_unit]
+	var team1: Array[BattleUnit] = [team1_unit]
+	var team2: Array[BattleUnit] = [team2_unit]
 	
 	# Connect to battle signals
 	auto_battler.battle_started.connect(func(): print("✓ Battle started"))

@@ -17,7 +17,7 @@ Each rule now defines a list of modifiers to be created if its conditions are me
 
 conditions: A dictionary describing the logic. It can check properties from the caster, the target, the skill itself, or the environment.
 
-modifiers: An array of modifier objects to be generated. Each object contains the exact data needed to create a PropertyProjector.Modifier.
+modifiers: An array of modifier objects to be generated. Each object contains the exact data needed to create a StatProjector.StatModifier.
 
 Example rules.json:
 
@@ -91,7 +91,7 @@ Note the complete absence of if statements related to game logic. The skill is n
 extends Node
 
 # Reference to the global rule processor
-@onready var rule_processor: Node = get_node("/root/RuleProcessor")
+var rule_processor: Node = null
 
 var base_damage: float = 50.0
 var damage_type: String = "fire"

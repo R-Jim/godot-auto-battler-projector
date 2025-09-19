@@ -13,6 +13,13 @@ extends Node2D
 var battle_unit: BattleUnit
 
 func _ready() -> void:
+    # Get node references or create them if they don't exist
+    sprite = get_node_or_null("Sprite2D")
+    health_bar = get_node_or_null("HealthBar")
+    name_label = get_node_or_null("NameLabel")
+    status_container = get_node_or_null("StatusContainer")
+    animation_player = get_node_or_null("AnimationPlayer")
+    
     if not sprite:
         _create_visual_components()
     

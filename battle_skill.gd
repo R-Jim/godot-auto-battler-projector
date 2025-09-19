@@ -10,6 +10,8 @@ extends RefCounted
 @export var resource_cost: float = 0.0
 @export var resource_type: String = "mana"
 @export var cast_time: float = 0.0
+@export var tags: Array[String] = []
+@export var reaction_chance: float = 0.0  # For reaction skills
 
 var last_used_time: float = 0.0
 
@@ -169,6 +171,16 @@ func get_targets(caster: BattleUnit, allies: Array[BattleUnit], enemies: Array[B
     
     return valid_targets
 
+func has_tag(tag: String) -> bool:
+    return tags.has(tag)
+
+func add_tag(tag: String) -> void:
+    if not tags.has(tag):
+        tags.append(tag)
+
+func remove_tag(tag: String) -> void:
+    tags.erase(tag)
+
 func clone() -> BattleSkill:
     var new_skill = BattleSkill.new()
     new_skill.skill_name = skill_name
@@ -180,4 +192,6 @@ func clone() -> BattleSkill:
     new_skill.resource_cost = resource_cost
     new_skill.resource_type = resource_type
     new_skill.cast_time = cast_time
+    new_skill.tags = tags.duplicate()
+    new_skill.reaction_chance = reaction_chance
     return new_skill

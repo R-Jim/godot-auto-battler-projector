@@ -3,7 +3,7 @@ res://sample_battle.tscn
 res://encounter_test.tscn
 res://encounter_test_scene.tscn
 res://progression_test_scene.tscn
-res://skill_cast.gd
-res://skill_cast_demo.gd
-res://skill_cast_example.gd
-res://battle_skill.gd
+res://observer_demo.tscn
+res://auto_battler.gd
+res://unit_action_queue.gd
+res://unit_visual.gd

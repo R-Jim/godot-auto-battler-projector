@@ -38,7 +38,8 @@ func load_rules() -> void:
         push_error("BattleRuleProcessor: Invalid rules format in '%s'. Expected JSON array, got %s" % [file_path, typeof(parsed)])
 
 func get_modifiers_for_context(context: Dictionary) -> Array:
-    var result: Array[StatProjector.StatModifier] = []
+    var StatProjector = load("res://stat_projector.gd")
+    var result: Array = []  # Array[StatProjector.StatModifier]
     
     for i in range(rules.size()):
         var rule = rules[i]
@@ -74,6 +75,7 @@ func _create_modifier_from_data(mod_data: Dictionary):
     if mod_data.has("duration") and mod_data.duration > 0:
         expires_at = Time.get_unix_time_from_system() + mod_data.duration
     
+    var StatProjector = load("res://stat_projector.gd")
     return StatProjector.StatModifier.new(
         mod_data.id,
         op,
@@ -84,6 +86,7 @@ func _create_modifier_from_data(mod_data: Dictionary):
     )
 
 func _string_to_op(op_str: String) -> int:
+    var StatProjector = load("res://stat_projector.gd")
     match op_str.to_upper():
         "ADD": return StatProjector.StatModifier.Op.ADD
         "MUL": return StatProjector.StatModifier.Op.MUL

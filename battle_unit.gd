@@ -25,30 +25,32 @@ var equipment: Dictionary = {}
 var locked_resources: Dictionary = {}  # Track reserved resources for pending skill casts
 
 func _init() -> void:
-	# Initialize stat projectors in _init so they're available before _ready
-	for stat_name in stats.keys():
-		stat_projectors[stat_name] = StatProjector.new()
+    # Initialize stat projectors in _init so they're available before _ready
+    for stat_name in stats.keys():
+        var projector = load("res://stat_projector.gd").new()
+        stat_projectors[stat_name] = projector
 
 func _ready() -> void:
-	# Initialize any missing stat projectors (for dynamically added stats like mana)
-	for stat_name in stats.keys():
-		if not stat_projectors.has(stat_name):
-			stat_projectors[stat_name] = StatProjector.new()
-	
-	# Connect signals after node is in tree
-	for stat_name in stats.keys():
-		stat_projectors[stat_name].connect("stat_calculation_changed", _on_stat_calculation_changed.bind(stat_name))
+    # Initialize any missing stat projectors (for dynamically added stats like mana)
+    for stat_name in stats.keys():
+        if not stat_projectors.has(stat_name):
+            var projector = load("res://stat_projector.gd").new()
+            stat_projectors[stat_name] = projector
+    
+    # Connect signals after node is in tree
+    for stat_name in stats.keys():
+        stat_projectors[stat_name].connect("stat_calculation_changed", _on_stat_calculation_changed.bind(stat_name))
     
     recalculate_stats()
 
 func _on_stat_calculation_changed(payload: Dictionary, stat_name: String) -> void:
-	stat_changed.emit(stat_name, get_projected_stat(stat_name))
+    stat_changed.emit(stat_name, get_projected_stat(stat_name))
 
 func get_projected_stat(stat_name: String) -> float:
-	if not stat_projectors.has(stat_name):
-		push_error("Unknown stat: " + stat_name)
-		return 0.0
-	return stat_projectors[stat_name].calculate_stat(stats.get(stat_name, 0.0))
+    if not stat_projectors.has(stat_name):
+        push_error("Unknown stat: " + stat_name)
+        return 0.0
+    return stat_projectors[stat_name].calculate_stat(stats.get(stat_name, 0.0))
 
 func take_damage(amount: float) -> void:
     var actual_damage = amount
@@ -122,6 +124,20 @@ func get_health_percentage() -> float:
     if max_health <= 0:
         return 0.0
     return stats.health / max_health
+
+func has_status(status_name: String) -> bool:
+    for status in status_effects:
+        if status.id == status_name:
+            return true
+    return false
+
+func has_tag(tag: String) -> bool:
+    # Check unit metadata for tags
+    if has_meta("tags"):
+        var unit_tags = get_meta("tags")
+        if unit_tags is Array and unit_tags.has(tag):
+            return true
+    return false
 
 func is_alive() -> bool:
     return stats.health > 0

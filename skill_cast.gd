@@ -75,6 +75,11 @@ func execute(rule_processor: BattleRuleProcessor) -> bool:
         push_error("SkillCast: Attempting to execute cancelled cast")
         return false
     
+    # Check if caster is still valid
+    if not is_instance_valid(caster):
+        push_error("SkillCast: Caster is no longer valid")
+        return false
+    
     # Deduct the locked resources
     for resource_type in claimed_resources:
         var amount = claimed_resources[resource_type]
@@ -84,7 +89,7 @@ func execute(rule_processor: BattleRuleProcessor) -> bool:
     
     # Execute skill on all targets
     for target in targets:
-        if target and target.is_alive():
+        if is_instance_valid(target) and target.is_alive():
             skill.execute_on_target(caster, target, rule_processor)
     
     # Mark skill as used (for cooldown)
