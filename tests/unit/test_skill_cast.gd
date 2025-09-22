@@ -3,7 +3,7 @@ extends GutTest
 var caster: BattleUnit
 var target: BattleUnit
 var skill: BattleSkill
-const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+const BattleRuleProcessorScript = preload("res://src/battle/battle_rule_processor.gd")
 
 var rule_processor
 

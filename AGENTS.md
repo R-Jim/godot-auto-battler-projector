@@ -31,19 +31,19 @@ The progression system tracks player advancement through a hierarchical data mod
 ### Implementation Details
 
 **Key Files and Responsibilities:**
-- `player_data.gd` - Manages player XP ($level = \lfloor \log_2(XP/100) \rfloor$), team slots, and global unlocks
-- `unit_data.gd` - Tracks individual unit progression including:
+- `src/progression/player_data.gd` - Manages player XP ($level = \lfloor \log_2(XP/100) \rfloor$), team slots, and global unlocks
+- `src/progression/unit_data.gd` - Tracks individual unit progression including:
   - Base stats (hp, attack, defense, speed)
   - Skill unlocks and upgrades
   - Equipment slots (weapon, armor, accessory)
   - Unit-specific XP and level
-- `progression_manager.gd` - Central controller that:
+- `src/progression/progression_manager.gd` - Central controller that:
   - Distributes encounter rewards
   - Manages unit roster
   - Triggers save/load operations
   - Validates progression state
-- `save_manager.gd` - Handles file I/O with versioning and validation
-- `player_hud.gd/tscn` - UI components for progression display
+- `src/progression/save_manager.gd` - Handles file I/O with versioning and validation
+- `src/ui/player_hud.gd` / `scenes/ui/player_hud.tscn` - UI components for progression display
 
 ### Critical Implementation Notes
 - XP distribution uses weighted allocation based on unit participation
@@ -52,7 +52,7 @@ The progression system tracks player advancement through a hierarchical data mod
 - Equipment modifiers stack additively before multiplicative effects
 
 ### Test Coverage
-- Run `progression_test_scene.tscn` for interactive testing
+- Run `scenes/tests/progression_test_scene.tscn` for interactive testing
 - Unit tests in `tests/unit/test_player_progression.gd`
 
 ## 3. Encounter System
@@ -70,29 +70,29 @@ The encounter system manages multi-wave battles with dynamic difficulty adjustme
 ### Component Architecture
 
 **Core Components:**
-- `encounter_manager.gd` - Main orchestrator that:
+- `src/encounter/encounter_manager.gd` - Main orchestrator that:
   - Manages encounter state machine (setup → wave → victory/defeat)
   - Handles wave transitions with proper cleanup
   - Applies environmental modifiers
   - Processes completion rewards
-- `encounter.gd` - Data model for individual encounters:
+- `src/encounter/encounter.gd` - Data model for individual encounters:
   - Wave configurations
   - Difficulty parameters
   - Environmental rules
   - Reward tables
-- `wave.gd` - Single wave management:
+- `src/encounter/wave.gd` - Single wave management:
   - Enemy unit spawning
   - Victory/defeat conditions
   - Wave-specific modifiers
-- `unit_factory.gd` - Unit instantiation with:
+- `src/encounter/unit_factory.gd` - Unit instantiation with:
   - Template-based creation
   - Difficulty scaling application
   - Stat randomization within bounds
-- `difficulty_scaler.gd` - Scaling calculations:
+- `src/encounter/difficulty_scaler.gd` - Scaling calculations:
   - Linear stat scaling: $stat_{scaled} = stat_{base} \times (1 + 0.1 \times difficulty)$
   - Enemy count adjustment
   - Reward multipliers
-- `encounter_rewards.gd` - Reward processing:
+- `src/encounter/encounter_rewards.gd` - Reward processing:
   - XP calculation and distribution
   - Gold and item generation
   - Unlock condition checking
@@ -108,8 +108,8 @@ Encounters can apply battle-wide effects:
 - Special victory conditions
 
 ### Test Scenarios
-- `encounter_test.tscn` - Standalone encounter testing
-- `progression_test_scene.tscn` - Full integration testing
+- `scenes/tests/encounter_test.tscn` - Standalone encounter testing
+- `scenes/tests/progression_test_scene.tscn` - Full integration testing
 
 ## 4. Build and Test Infrastructure
 
@@ -126,7 +126,7 @@ godot --headless -s res://addons/gut/gut_cmdln.gd -gtest=test_property_projector
 godot --headless -s res://addons/gut/gut_cmdln.gd -gtest=test_*skill*.gd -gexit
 
 # Run tests in editor (visual)
-# Open run_all_tests.tscn and press F6
+# Open scenes/tests/run_all_tests.tscn and press F6
 
 # Lint/Format
 # Use Godot editor's built-in script analyzer (Project → Tools → Script Editor → Script → Tool → Format)

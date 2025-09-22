@@ -1,7 +1,7 @@
 class_name StatusEffect
 extends RefCounted
 
-const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+const BattleRuleProcessorScript = preload("res://src/battle/battle_rule_processor.gd")
 
 @export var id: String = ""
 @export var effect_name: String = "Status Effect"

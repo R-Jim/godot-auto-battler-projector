@@ -66,20 +66,20 @@ This auto battler demonstrates professional game development practices in Godot 
    ```
 
 2. Open in Godot 4 and run one of these scenes:
-   - `progression_test_scene.tscn` - Full game experience with progression
-   - `visual_battle_test.tscn` - Visual battle system testing
-   - `encounter_test_scene.tscn` - Encounter selection and management
-   - `sample_battle.tscn` - Basic combat demonstration
+   - `scenes/tests/progression_test_scene.tscn` - Full game experience with progression
+   - `scenes/tests/visual_battle_test.tscn` - Visual battle system testing
+   - `scenes/tests/encounter_test_scene.tscn` - Encounter selection and management
+   - `scenes/samples/sample_battle.tscn` - Basic combat demonstration
 
 3. Run tests:
    ```bash
    ./run_tests.sh  # Headless testing
-   # or open run_all_tests.tscn in editor
+   # or open scenes/tests/run_all_tests.tscn in editor
    ```
 
 ## Core Systems
 
-### 1. Stat Projection System (`stat_projector.gd`)
+### 1. Stat Projection System (`src/skills/stat_projector.gd`)
 
 The mathematical engine powering all stat calculations. Each stat uses a StatProjector to manage and apply modifiers in a predictable order.
 
@@ -108,7 +108,7 @@ var final_attack = attack_projector.project(10.0)
 - **Applies To**: Which properties this modifier affects
 - **Insertion Order**: Tie-breaker for same priority
 
-### 2. Battle System (`auto_battler.gd`)
+### 2. Battle System (`src/battle/auto_battler.gd`)
 
 Complete auto-battler implementation with visual components:
 - Turn-based combat with initiative system
@@ -117,7 +117,7 @@ Complete auto-battler implementation with visual components:
 - AI-driven decision making
 - Visual feedback with animations and effects
 
-### 3. Battle Rule Processing (`battle_rule_processor.gd`)
+### 3. Battle Rule Processing (`src/battle/battle_rule_processor.gd`)
 
 Evaluates conditions and generates modifiers based on game context. All combat mechanics are defined in `battle_rules.json`.
 
@@ -379,7 +379,7 @@ The project includes comprehensive test coverage using GUT (Godot Unit Test) fra
 godot --headless -s res://addons/gut/gut_cmdln.gd -gtest=test_*unit*.gd
 
 # Run tests in editor with GUI
-# Open run_all_tests.tscn
+# Open scenes/tests/run_all_tests.tscn
 ```
 
 ### Test Categories
@@ -481,31 +481,25 @@ The project includes Model Context Protocol support for AI-assisted development:
 
 ### Project Structure
 ```
-├── Core Systems/
-│   ├── stat_projector.gd      # Stat calculation engine
-│   ├── battle_rule_processor.gd # Rule evaluation system
-│   ├── auto_battler.gd        # Battle orchestrator
-│   └── battle_unit.gd         # Unit implementation
-├── Progression/
-│   ├── progression_manager.gd  # AutoLoad singleton
-│   ├── player_data.gd         # Player profile
-│   └── save_manager.gd        # Persistence layer
-├── Encounters/
-│   ├── encounter_manager.gd    # Wave orchestration
-│   ├── unit_factory.gd        # Enemy generation
-│   └── difficulty_scaler.gd   # Dynamic difficulty
-├── Skills/
-│   ├── skill_cast.gd          # Execution system
-│   ├── skill_evaluator.gd     # AI evaluation
-│   └── skill_activation_observer.gd # Event handling
-├── Visual/
-│   ├── unit_visual.gd         # Sprite management
-│   └── player_hud.gd          # UI components
-└── Data/
-    ├── battle_rules.json      # Combat mechanics
-    ├── encounters.json        # Battle definitions
-    └── unit_templates.json    # Unit configurations
+├── src/
+│   ├── battle/              # Auto-battler combat systems
+│   ├── encounter/           # Wave orchestration and scaling
+│   ├── progression/         # Player data, units, and saves
+│   ├── skills/              # Skills, evaluators, and modifiers
+│   ├── shared/              # Shared gameplay helpers (e.g., visuals)
+│   └── ui/                  # HUD and other UI scripts
+├── scenes/
+│   ├── samples/             # Demo scenes for quick previews
+│   └── tests/               # Instrumented test harness scenes
+├── tools/
+│   ├── diagnostics/         # Runtime verification utilities
+│   └── testing/             # Automated test runners
+├── tests/                   # GUT unit and integration suites
+├── data/                    # JSON configuration for units/encounters
+├── addons/                  # Third-party plugins (e.g., GUT)
+└── run_tests.sh             # Convenience script for headless tests
 ```
+
 
 ### Extension Points
 - Add new stat types in StatProjector

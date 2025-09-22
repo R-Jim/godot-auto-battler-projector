@@ -1,6 +1,6 @@
 extends GutTest
 
-const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+const BattleRuleProcessorScript = preload("res://src/battle/battle_rule_processor.gd")
 
 var processor
 

@@ -1,6 +1,6 @@
 extends GutTest
 
-const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+const BattleRuleProcessorScript = preload("res://src/battle/battle_rule_processor.gd")
 
 var battle_scene: Node2D
 var rule_processor
@@ -9,7 +9,7 @@ var unit2: BattleUnit
 
 func before_each():
     # Create rule processor
-    var BattleRuleProcessorScript = load("res://battle_rule_processor.gd")
+    var BattleRuleProcessorScript = load("res://src/battle/battle_rule_processor.gd")
     rule_processor = BattleRuleProcessorScript.new()
     rule_processor.name = "RuleProcessor"
     rule_processor.skip_auto_load = true  # Don't load from JSON file

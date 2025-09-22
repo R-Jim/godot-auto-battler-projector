@@ -2,18 +2,18 @@
 
 ## Changes Made
 
-1. **Modified `auto_battler.gd`**:
+1. **Modified `src/battle/auto_battler.gd`**:
    - Changed from `extends Node` to `extends Node2D` to support positioning
    - Added `_setup_unit_visual()` function to create visual components for units
    - Added unit positioning logic (team1 on left, team2 on right)
    - Added preload for UnitVisual class
 
-2. **Updated `progression_test_scene.tscn`**:
+2. **Updated `scenes/tests/progression_test_scene.tscn`**:
    - Changed AutoBattler from Node to Node2D
    - Added Camera2D at position (576, 324)
    - Added BattleBackground ColorRect for visual reference
 
-3. **Created `visual_battle_test.tscn` and `visual_battle_test.gd`**:
+3. **Created `scenes/tests/visual_battle_test.tscn` and `scenes/tests/visual_battle_test.gd`**:
    - New dedicated test scene for visual battle testing
    - Includes Camera2D, background, and UI elements
    - Creates test units with proper stats
@@ -22,14 +22,14 @@
 ## How to Test
 
 1. **Visual Battle Test Scene**:
-   - Open `visual_battle_test.tscn` in Godot
+   - Open `scenes/tests/visual_battle_test.tscn` in Godot
    - Press F6 or Run Scene
    - Click "Start Battle" button
    - You should see colored squares representing units positioned on screen
    - Watch the battle progress with visual animations
 
 2. **Progression Test Scene**:
-   - Open `progression_test_scene.tscn` in Godot
+   - Open `scenes/tests/progression_test_scene.tscn` in Godot
    - Press F6 or Run Scene
    - Select an encounter from the list
    - Click "Start Encounter"

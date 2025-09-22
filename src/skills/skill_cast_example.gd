@@ -76,7 +76,7 @@ func _on_unit_died(unit: BattleUnit) -> void:
 
 # Example: Try to cast multiple skills at once
 func demonstrate_race_condition_prevention() -> void:
-	var mage = preload("res://battle_unit.gd").new()
+	var mage = preload("res://src/battle/battle_unit.gd").new()
 	mage.stats = {"mana": 50.0}
 	mage.stat_projectors["mana"] = StatProjector.new()
 	

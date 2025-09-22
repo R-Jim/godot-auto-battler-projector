@@ -25,9 +25,9 @@ var _skill_history: Array[Dictionary] = []
 
 
 func _ready() -> void:
-	skill_evaluator = load("res://skill_evaluator.gd").new()
-	action_queue = load("res://unit_action_queue.gd").new()
-	battle_context = load("res://battle_context.gd").new()
+	skill_evaluator = load("res://src/skills/skill_evaluator.gd").new()
+	action_queue = load("res://src/battle/unit_action_queue.gd").new()
+	battle_context = load("res://src/battle/battle_context.gd").new()
 	
 	# Get rule processor if available
 	rule_processor = get_node_or_null("/root/RuleProcessor")

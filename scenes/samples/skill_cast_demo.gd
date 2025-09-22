@@ -90,7 +90,7 @@ func demo_interrupt_handling() -> void:
 func create_test_unit(unit_name: String, resources: Dictionary) -> Node:
 	var unit = Node.new()
 	unit.name = unit_name
-	unit.set_script(preload("res://battle_unit.gd"))
+	unit.set_script(preload("res://src/battle/battle_unit.gd"))
 	
 	# Initialize basic stats
 	unit.stats = {
@@ -107,7 +107,7 @@ func create_test_unit(unit_name: String, resources: Dictionary) -> Node:
 	
 	# Initialize projectors
 	for stat_name in unit.stats:
-		unit.stat_projectors[stat_name] = load("res://stat_projector.gd").new()
+		unit.stat_projectors[stat_name] = load("res://src/skills/stat_projector.gd").new()
 	
 	# Initialize other required properties
 	unit.skills = []
@@ -118,7 +118,7 @@ func create_test_unit(unit_name: String, resources: Dictionary) -> Node:
 	return unit
 
 func create_test_skill(skill_name: String, cost: float, resource: String) -> RefCounted:
-	var skill = preload("res://battle_skill.gd").new()
+	var skill = preload("res://src/battle/battle_skill.gd").new()
 	skill.skill_name = skill_name
 	skill.base_damage = 50.0
 	skill.resource_cost = cost
@@ -129,7 +129,7 @@ func create_test_skill(skill_name: String, cost: float, resource: String) -> Ref
 
 func create_dummy_rule_processor() -> Node:
 	var processor = Node.new()
-	processor.set_script(preload("res://battle_rule_processor.gd"))
+	processor.set_script(preload("res://src/battle/battle_rule_processor.gd"))
 	processor.skip_auto_load = true
 	processor.rules = []
 	return processor

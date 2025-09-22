@@ -1,11 +1,11 @@
 extends GutTest
 
-const BattleEventManager = preload("res://battle_event_manager.gd")
-const BattleEvent = preload("res://battle_event.gd")
-const BattleUnit = preload("res://battle_unit.gd")
-const BattleSkill = preload("res://battle_skill.gd")
-const BattleContext = preload("res://battle_context.gd")
-const SkillActivationObserver = preload("res://skill_activation_observer.gd")
+const BattleEventManager = preload("res://src/battle/battle_event_manager.gd")
+const BattleEvent = preload("res://src/battle/battle_event.gd")
+const BattleUnit = preload("res://src/battle/battle_unit.gd")
+const BattleSkill = preload("res://src/battle/battle_skill.gd")
+const BattleContext = preload("res://src/battle/battle_context.gd")
+const SkillActivationObserver = preload("res://src/skills/skill_activation_observer.gd")
 
 var event_manager: BattleEventManager
 var battle_context: BattleContext

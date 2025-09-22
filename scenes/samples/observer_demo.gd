@@ -4,7 +4,7 @@ var battle: AutoBattler
 
 func _ready() -> void:
     # Create battle manager
-    battle = preload("res://auto_battler.gd").new()
+    battle = preload("res://src/battle/auto_battler.gd").new()
     battle.use_observer_system = true  # Enable new system
     battle.name = "Battle"
     add_child(battle)
@@ -23,8 +23,8 @@ func _ready() -> void:
     print("Observer-based battle started!")
 
 func create_team(team_num: int, unit_count: int) -> Array[BattleUnit]:
-    var BattleUnit = preload("res://battle_unit.gd")
-    var BattleSkill = preload("res://battle_skill.gd")
+    var BattleUnit = preload("res://src/battle/battle_unit.gd")
+    var BattleSkill = preload("res://src/battle/battle_skill.gd")
     var team: Array[BattleUnit] = []
     
     for i in range(unit_count):

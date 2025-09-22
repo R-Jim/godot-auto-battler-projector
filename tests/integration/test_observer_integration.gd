@@ -8,7 +8,7 @@ var rule_processor
 func before_each() -> void:
     # Create RuleProcessor if not exists
     if not get_node_or_null("/root/RuleProcessor"):
-        var BattleRuleProcessorScript = load("res://battle_rule_processor.gd")
+        var BattleRuleProcessorScript = load("res://src/battle/battle_rule_processor.gd")
         rule_processor = BattleRuleProcessorScript.new()
         rule_processor.name = "RuleProcessor"
         get_tree().root.add_child(rule_processor)
@@ -176,7 +176,7 @@ func test_reaction_skills() -> void:
 
 func test_skill_evaluation_respects_ai_type() -> void:
     # Set AI types before starting battle
-    var BattleAI = load("res://battle_ai.gd")
+    var BattleAI = load("res://src/battle/battle_ai.gd")
     team1[0].set_meta("ai_type", BattleAI.AIType.AGGRESSIVE)
     team1[1].set_meta("ai_type", BattleAI.AIType.DEFENSIVE)
     

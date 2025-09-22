@@ -1,6 +1,6 @@
 extends GutTest
 
-const BattleEvent = preload("res://battle_event.gd")
+const BattleEvent = preload("res://src/battle/battle_event.gd")
 
 var test_event: BattleEvent
 

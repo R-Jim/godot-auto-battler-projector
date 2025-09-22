@@ -312,7 +312,7 @@ async def run_tests(test_pattern: str = "") -> str:
         args.append(f"-gtest={test_pattern}")
     
     # Add force quit script
-    args.extend(["--", "--script", "res://force_quit.gd"])
+    args.extend(["--", "--script", "res://tools/diagnostics/force_quit.gd"])
     
     success, stdout, stderr = run_godot_command(args, timeout=120)
     
@@ -331,7 +331,7 @@ async def run_scene(scene_path: str, timeout_seconds: int = 30) -> str:
     Run a specific Godot scene with proper cleanup.
     
     Args:
-        scene_path: Path to the scene file (e.g., "res://battle_test.tscn")
+        scene_path: Path to the scene file (e.g., "res://scenes/tests/battle_test.tscn")
         timeout_seconds: How long to run the scene before stopping (max 300 seconds)
     """
     # Cap timeout to prevent excessive resource usage
@@ -352,7 +352,7 @@ async def check_script_errors() -> str:
     """
     Check all GDScript files for syntax errors with proper cleanup.
     """
-    args = ["--script", "res://check_gut.gd", "--check-only", "--quit"]
+    args = ["--script", "res://tools/testing/check_gut.gd", "--check-only", "--quit"]
     success, stdout, stderr = run_godot_command(args, timeout=60)
     
     # Ensure cleanup

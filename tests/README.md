@@ -7,7 +7,7 @@ This directory contains unit and integration tests for the Auto Battler project 
 ### From Godot Editor
 1. Open the project in Godot 4.x
 2. Enable the GUT plugin if not already enabled (Project > Project Settings > Plugins)
-3. Open `run_all_tests.tscn` in the root directory
+3. Open `scenes/tests/run_all_tests.tscn` in the editor
 4. Press F6 to run the test scene
 
 ### From Command Line

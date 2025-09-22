@@ -4,7 +4,7 @@ var tag_builder
 
 func before_each():
 	tag_builder = Node.new()
-	tag_builder.set_script(load("res://tag_builder.gd"))
+	tag_builder.set_script(load("res://src/skills/tag_builder.gd"))
 	tag_builder.rules = []  # Override file loading
 
 func test_validate_rule_valid():

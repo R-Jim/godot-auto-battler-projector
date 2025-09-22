@@ -1,7 +1,7 @@
 class_name BattleSkill
 extends RefCounted
 
-const StatProjector = preload("res://stat_projector.gd")
+const StatProjector = preload("res://src/skills/stat_projector.gd")
 
 @export var skill_name: String = "Skill"
 @export var description: String = ""

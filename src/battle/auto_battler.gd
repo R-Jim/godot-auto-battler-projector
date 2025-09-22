@@ -1,7 +1,7 @@
 class_name AutoBattler
 extends Node2D
 
-const UnitVisual = preload("res://unit_visual.gd")
+const UnitVisual = preload("res://src/shared/unit_visual.gd")
 
 signal battle_started
 signal battle_ended(winner_team: int)
@@ -207,7 +207,7 @@ func _execute_basic_attack(attacker: BattleUnit, target: BattleUnit) -> void:
 func _execute_defend(unit: BattleUnit) -> void:
     action_performed.emit(unit, {"type": "defend"})
     
-    var StatProjector = load("res://stat_projector.gd")
+    var StatProjector = load("res://src/skills/stat_projector.gd")
     var defense_mod = StatProjector.StatModifier.new(
         "defend_action",
         StatProjector.StatModifier.Op.MUL,

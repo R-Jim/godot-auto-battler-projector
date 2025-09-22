@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://btm8e7xvq4ged"]
 
-[ext_resource type="Script" uid="uid://c3qax6o0l6q5" path="res://encounter_test.gd" id="1_7y8nq"]
-[ext_resource type="Script" uid="uid://c6i2chu7ubghy" path="res://auto_battler.gd" id="2_3nkjl"]
-[ext_resource type="Script" uid="uid://hk5m4mp14mvi" path="res://encounter_manager.gd" id="3_4mlkn"]
+[ext_resource type="Script" uid="uid://c3qax6o0l6q5" path="res://scenes/tests/encounter_test.gd" id="1_7y8nq"]
+[ext_resource type="Script" uid="uid://c6i2chu7ubghy" path="res://src/battle/auto_battler.gd" id="2_3nkjl"]
+[ext_resource type="Script" uid="uid://hk5m4mp14mvi" path="res://src/encounter/encounter_manager.gd" id="3_4mlkn"]
 
 [node name="EncounterTest" type="Node2D"]
 script = ExtResource("1_7y8nq")

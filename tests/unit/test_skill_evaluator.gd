@@ -6,11 +6,11 @@ var enemy = null  # BattleUnit
 var context: Dictionary
 
 func before_each() -> void:
-    var SkillEvaluator = load("res://skill_evaluator.gd")
+    var SkillEvaluator = load("res://src/skills/skill_evaluator.gd")
     evaluator = SkillEvaluator.new()
     
     # Create test unit
-    var BattleUnit = load("res://battle_unit.gd")
+    var BattleUnit = load("res://src/battle/battle_unit.gd")
     unit = BattleUnit.new()
     unit.unit_name = "TestUnit"
     unit.team = 1
@@ -24,7 +24,7 @@ func before_each() -> void:
         "max_mana": 100.0
     }
     
-    var StatProjector = load("res://stat_projector.gd")
+    var StatProjector = load("res://src/skills/stat_projector.gd")
     for stat_name in unit.stats.keys():
         unit.stat_projectors[stat_name] = StatProjector.new()
     
@@ -58,7 +58,7 @@ func after_each() -> void:
         enemy.queue_free()
 
 func test_free_skill_efficiency() -> void:
-    var BattleSkill = load("res://battle_skill.gd")
+    var BattleSkill = load("res://src/battle/battle_skill.gd")
     var skill = BattleSkill.new()
     skill.skill_name = "Free Attack"
     skill.base_damage = 20.0

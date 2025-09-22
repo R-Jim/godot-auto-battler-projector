@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b4kxj7h8y2n5m"]
 
-[ext_resource type="Script" path="res://player_hud.gd" id="1_xqv8p"]
+[ext_resource type="Script" path="res://src/ui/player_hud.gd" id="1_xqv8p"]
 
 [node name="PlayerHUD" type="Control"]
 anchor_right = 1.0

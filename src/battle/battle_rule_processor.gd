@@ -1,7 +1,7 @@
 class_name BattleRuleProcessor
 extends Node
 
-const StatProjector = preload("res://stat_projector.gd")
+const StatProjector = preload("res://src/skills/stat_projector.gd")
 
 var rules: Array = []
 var skip_auto_load: bool = false

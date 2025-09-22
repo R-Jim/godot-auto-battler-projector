@@ -2,7 +2,7 @@ extends GutTest
 
 func test_skill_cast_basic_functionality() -> void:
 	# Create units manually
-	var caster = preload("res://battle_unit.gd").new()
+	var caster = preload("res://src/battle/battle_unit.gd").new()
 	caster.name = "Caster"
 	caster.stats = {
 		"health": 100.0,
@@ -14,11 +14,11 @@ func test_skill_cast_basic_functionality() -> void:
 	}
 	
 	# Initialize projectors
-	var StatProjectorClass = preload("res://stat_projector.gd")
+	var StatProjectorClass = preload("res://src/skills/stat_projector.gd")
 	for stat_name in caster.stats.keys():
 		caster.stat_projectors[stat_name] = StatProjectorClass.new()
 	
-	var target = preload("res://battle_unit.gd").new()
+	var target = preload("res://src/battle/battle_unit.gd").new()
 	target.name = "Target"
 	target.stats = {
 		"health": 80.0,
@@ -32,7 +32,7 @@ func test_skill_cast_basic_functionality() -> void:
 		target.stat_projectors[stat_name] = StatProjectorClass.new()
 	
 	# Create skill
-	var skill = preload("res://battle_skill.gd").new()
+	var skill = preload("res://src/battle/battle_skill.gd").new()
 	skill.skill_name = "Test Spell"
 	skill.base_damage = 30.0
 	skill.resource_cost = 20.0
@@ -40,7 +40,7 @@ func test_skill_cast_basic_functionality() -> void:
 	skill.cooldown = 5.0
 	
 	# Test 1: Can create skill cast
-	var SkillCastClass = preload("res://skill_cast.gd")
+	var SkillCastClass = preload("res://src/skills/skill_cast.gd")
 	var cast = SkillCastClass.new(skill, caster)
 	assert_not_null(cast)
 	assert_eq(cast.skill, skill)
@@ -69,20 +69,20 @@ func test_skill_cast_basic_functionality() -> void:
 
 func test_resource_race_condition_prevention() -> void:
 	# Setup
-	var StatProjectorClass = preload("res://stat_projector.gd")
-	var caster = preload("res://battle_unit.gd").new()
+	var StatProjectorClass = preload("res://src/skills/stat_projector.gd")
+	var caster = preload("res://src/battle/battle_unit.gd").new()
 	caster.stats = {"mana": 50.0}
 	caster.stat_projectors["mana"] = StatProjectorClass.new()
 	
-	var SkillCastClass = preload("res://skill_cast.gd")
+	var SkillCastClass = preload("res://src/skills/skill_cast.gd")
 	
 	# Create two expensive skills
-	var skill1 = preload("res://battle_skill.gd").new()
+	var skill1 = preload("res://src/battle/battle_skill.gd").new()
 	skill1.skill_name = "Expensive Spell 1"
 	skill1.resource_cost = 30.0
 	skill1.resource_type = "mana"
 	
-	var skill2 = preload("res://battle_skill.gd").new()
+	var skill2 = preload("res://src/battle/battle_skill.gd").new()
 	skill2.skill_name = "Expensive Spell 2"
 	skill2.resource_cost = 30.0
 	skill2.resource_type = "mana"
@@ -101,15 +101,15 @@ func test_resource_race_condition_prevention() -> void:
 
 func test_instant_vs_cast_time() -> void:
 	# Setup
-	var StatProjectorClass = preload("res://stat_projector.gd")
-	var caster = preload("res://battle_unit.gd").new()
+	var StatProjectorClass = preload("res://src/skills/stat_projector.gd")
+	var caster = preload("res://src/battle/battle_unit.gd").new()
 	caster.stats = {"mana": 100.0}
 	caster.stat_projectors["mana"] = StatProjectorClass.new()
 	
-	var SkillCastClass = preload("res://skill_cast.gd")
+	var SkillCastClass = preload("res://src/skills/skill_cast.gd")
 	
 	# Instant cast skill
-	var instant_skill = preload("res://battle_skill.gd").new()
+	var instant_skill = preload("res://src/battle/battle_skill.gd").new()
 	instant_skill.skill_name = "Instant"
 	instant_skill.cast_time = 0.0
 	
@@ -118,7 +118,7 @@ func test_instant_vs_cast_time() -> void:
 	assert_true(instant_cast.is_ready())
 	
 	# Cast time skill
-	var slow_skill = preload("res://battle_skill.gd").new()
+	var slow_skill = preload("res://src/battle/battle_skill.gd").new()
 	slow_skill.skill_name = "Slow Cast"
 	slow_skill.cast_time = 2.0
 	

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://visual_battle_test.gd" id="1_visual"]
-[ext_resource type="Script" path="res://auto_battler.gd" id="2_battler"]
+[ext_resource type="Script" path="res://scenes/tests/visual_battle_test.gd" id="1_visual"]
+[ext_resource type="Script" path="res://src/battle/auto_battler.gd" id="2_battler"]
 
 [node name="VisualBattleTest" type="Node2D"]
 script = ExtResource("1_visual")

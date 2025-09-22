@@ -288,7 +288,7 @@ func _apply_ai_weights(unit: BattleUnit) -> void:
     if not unit.has_meta("ai_type"):
         return
     
-    var BattleAI = load("res://battle_ai.gd")
+    var BattleAI = load("res://src/battle/battle_ai.gd")
     var ai_type = unit.get_meta("ai_type")
     match ai_type:
         BattleAI.AIType.AGGRESSIVE:

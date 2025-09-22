@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://diqwrhabeg8uy"]
 
-[ext_resource type="Script" uid="uid://bqwlxadpo8faf" path="res://sample_battle.gd" id="1_sample"]
-[ext_resource type="Script" uid="uid://c6i2chu7ubghy" path="res://auto_battler.gd" id="2_auto"]
+[ext_resource type="Script" uid="uid://bqwlxadpo8faf" path="res://scenes/samples/sample_battle.gd" id="1_sample"]
+[ext_resource type="Script" uid="uid://c6i2chu7ubghy" path="res://src/battle/auto_battler.gd" id="2_auto"]
 
 [node name="SampleBattle" type="Node2D"]
 script = ExtResource("1_sample")

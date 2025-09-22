@@ -1,12 +1,12 @@
 class_name BattleEventManager
 extends Node
 
-const BattleEvent = preload("res://battle_event.gd")
-const BattleUnit = preload("res://battle_unit.gd")
-const BattleContext = preload("res://battle_context.gd")
-const BattleSkill = preload("res://battle_skill.gd")
-const SkillActivationObserver = preload("res://skill_activation_observer.gd")
-const SkillCast = preload("res://skill_cast.gd")
+const BattleEvent = preload("res://src/battle/battle_event.gd")
+const BattleUnit = preload("res://src/battle/battle_unit.gd")
+const BattleContext = preload("res://src/battle/battle_context.gd")
+const BattleSkill = preload("res://src/battle/battle_skill.gd")
+const SkillActivationObserver = preload("res://src/skills/skill_activation_observer.gd")
+const SkillCast = preload("res://src/skills/skill_cast.gd")
 
 var _context: BattleContext = null
 var _skill_observer: SkillActivationObserver = null

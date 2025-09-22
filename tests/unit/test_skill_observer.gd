@@ -4,16 +4,16 @@ var observer = null  # SkillActivationObserver
 var unit1 = null  # BattleUnit
 var unit2 = null  # BattleUnit
 var skill = null  # BattleSkill
-const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+const BattleRuleProcessorScript = preload("res://src/battle/battle_rule_processor.gd")
 
 var rule_processor = null
 
 func before_each() -> void:
-	var SkillActivationObserver = load("res://skill_activation_observer.gd")
+	var SkillActivationObserver = load("res://src/skills/skill_activation_observer.gd")
 	observer = SkillActivationObserver.new()
 	
 	# Create test units
-	var BattleUnit = load("res://battle_unit.gd")
+	var BattleUnit = load("res://src/battle/battle_unit.gd")
 	unit1 = BattleUnit.new()
 	unit1.unit_name = "Unit1"
 	unit1.team = 1
@@ -27,7 +27,7 @@ func before_each() -> void:
 	}
 	
 	# Initialize projectors
-	var StatProjector = load("res://stat_projector.gd")
+	var StatProjector = load("res://src/skills/stat_projector.gd")
 	for stat_name in unit1.stats.keys():
 		unit1.stat_projectors[stat_name] = StatProjector.new()
 	
@@ -46,7 +46,7 @@ func before_each() -> void:
 		unit2.stat_projectors[stat_name] = StatProjector.new()
 	
 	# Create test skill
-	var BattleSkill = load("res://battle_skill.gd")
+	var BattleSkill = load("res://src/battle/battle_skill.gd")
 	skill = BattleSkill.new()
 	skill.skill_name = "Test Attack"
 	skill.base_damage = 30.0
@@ -148,7 +148,7 @@ func test_cast_progress_tracking() -> void:
 	assert_eq(cast.get_cast_progress(), 1.0)
 
 func test_reaction_trigger() -> void:
-	var BattleSkill = load("res://battle_skill.gd")
+	var BattleSkill = load("res://src/battle/battle_skill.gd")
 	var reaction_skill = BattleSkill.new()
 	reaction_skill.skill_name = "Counter"
 	reaction_skill.base_damage = 20.0

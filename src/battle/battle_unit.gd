@@ -1,7 +1,7 @@
 class_name BattleUnit
 extends Node2D
 
-const StatProjector = preload("res://stat_projector.gd")
+const StatProjector = preload("res://src/skills/stat_projector.gd")
 
 signal unit_died
 signal stat_changed(stat_name: String, new_value: float)

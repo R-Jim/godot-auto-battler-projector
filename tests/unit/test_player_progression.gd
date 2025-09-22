@@ -133,7 +133,7 @@ func test_save_and_load():
     assert_eq(loaded.unit_roster[0].unit_level, 3, "Unit level should be preserved")
 
 func test_progression_manager():
-    var manager = load("res://progression_manager.gd").new()
+    var manager = load("res://src/progression/progression_manager.gd").new()
     # Don't call _ready() to avoid loading save data
     manager.player_data = PlayerData.new()
     
