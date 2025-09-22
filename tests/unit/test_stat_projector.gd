@@ -7,13 +7,13 @@ func before_each():
     watch_signals(projector)
 
 func test_add_modifier_returns_modifier():
-    var mod = StatProjector.StatModifier.new("test", StatProjector.StatModifier.Op.ADD, 10.0, 0, [], -1.0)
+    var mod = StatProjector.StatModifier.new("test", StatProjector.ModifierOp.ADD, 10.0, 0, [], -1.0)
     var result = projector.add_modifier(mod)
     assert_eq(result, mod)
     assert_signal_emitted(projector, "stat_calculation_changed")
 
 func test_add_modifier_with_empty_id_fails():
-    var mod = StatProjector.StatModifier.new("", StatProjector.StatModifier.Op.ADD, 10.0, 0, [], -1.0)
+    var mod = StatProjector.StatModifier.new("", StatProjector.ModifierOp.ADD, 10.0, 0, [], -1.0)
     var result = projector.add_modifier(mod)
     assert_null(result)
 

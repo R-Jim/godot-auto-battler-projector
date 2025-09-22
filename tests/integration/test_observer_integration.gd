@@ -3,12 +3,13 @@ extends GutTest
 var battle: AutoBattler
 var team1: Array[BattleUnit] = []
 var team2: Array[BattleUnit] = []
-var rule_processor: BattleRuleProcessor
+var rule_processor
 
 func before_each() -> void:
     # Create RuleProcessor if not exists
     if not get_node_or_null("/root/RuleProcessor"):
-        rule_processor = BattleRuleProcessor.new()
+        var BattleRuleProcessorScript = load("res://battle_rule_processor.gd")
+        rule_processor = BattleRuleProcessorScript.new()
         rule_processor.name = "RuleProcessor"
         get_tree().root.add_child(rule_processor)
     

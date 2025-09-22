@@ -12,12 +12,12 @@ func test_init_with_parameters():
     assert_eq(equip.slot, "weapon")
 
 func test_add_stat_modifier():
-    equipment.add_stat_modifier("attack", StatProjector.StatModifier.Op.ADD, 10.0, 5)
+    equipment.add_stat_modifier("attack", StatProjector.ModifierOp.ADD, 10.0, 5)
     assert_eq(equipment.modifiers.size(), 1)
     
     var mod = equipment.modifiers[0]
     assert_eq(mod.id, "_attack_0")
-    assert_eq(mod.op, StatProjector.StatModifier.Op.ADD)
+    assert_eq(mod.op, StatProjector.ModifierOp.ADD)
     assert_eq(mod.value, 10.0)
     assert_eq(mod.priority, 5)
     assert_eq(mod.applies_to, ["attack"])
@@ -28,7 +28,7 @@ func test_add_additive_stat():
     
     assert_eq(equipment.modifiers.size(), 1)
     var mod = equipment.modifiers[0]
-    assert_eq(mod.op, StatProjector.StatModifier.Op.ADD)
+    assert_eq(mod.op, StatProjector.ModifierOp.ADD)
     assert_eq(mod.value, 5.0)
 
 func test_add_multiplicative_stat():
@@ -37,7 +37,7 @@ func test_add_multiplicative_stat():
     
     assert_eq(equipment.modifiers.size(), 1)
     var mod = equipment.modifiers[0]
-    assert_eq(mod.op, StatProjector.StatModifier.Op.MUL)
+    assert_eq(mod.op, StatProjector.ModifierOp.MUL)
     assert_eq(mod.value, 1.5)
 
 func test_multiple_modifiers():

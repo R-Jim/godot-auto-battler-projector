@@ -121,7 +121,7 @@ static func apply_difficulty_to_unit(unit: BattleUnit, modifiers: Dictionary) ->
     if "enemy_health" in modifiers:
         var health_mod = StatProjector.StatModifier.new(
             "difficulty_health",
-            StatProjector.StatModifier.Op.MUL,
+            StatProjector.ModifierOp.MUL,
             modifiers.enemy_health,
             5,
             ["max_health", "health"],
@@ -134,7 +134,7 @@ static func apply_difficulty_to_unit(unit: BattleUnit, modifiers: Dictionary) ->
     if "enemy_damage" in modifiers:
         var damage_mod = StatProjector.StatModifier.new(
             "difficulty_damage",
-            StatProjector.StatModifier.Op.MUL,
+            StatProjector.ModifierOp.MUL,
             modifiers.enemy_damage,
             5,
             ["attack"],
@@ -145,7 +145,7 @@ static func apply_difficulty_to_unit(unit: BattleUnit, modifiers: Dictionary) ->
     if "enemy_defense" in modifiers:
         var defense_mod = StatProjector.StatModifier.new(
             "difficulty_defense",
-            StatProjector.StatModifier.Op.MUL,
+            StatProjector.ModifierOp.MUL,
             modifiers.enemy_defense,
             5,
             ["defense"],
@@ -156,7 +156,7 @@ static func apply_difficulty_to_unit(unit: BattleUnit, modifiers: Dictionary) ->
     if "enemy_speed" in modifiers:
         var speed_mod = StatProjector.StatModifier.new(
             "difficulty_speed",
-            StatProjector.StatModifier.Op.MUL,
+            StatProjector.ModifierOp.MUL,
             modifiers.enemy_speed,
             5,
             ["speed"],

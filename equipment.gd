@@ -16,7 +16,7 @@ func _init(_id: String = "", _name: String = "", _slot: String = "weapon") -> vo
     equipment_name = _name
     slot = _slot
 
-func add_stat_modifier(stat: String, op: StatProjector.StatModifier.Op, value: float, priority: int = 0) -> void:
+func add_stat_modifier(stat: String, op: int, value: float, priority: int = 0) -> void:
     var mod_id = id + "_" + stat + "_" + str(modifiers.size())
     var mod = StatProjector.StatModifier.new(
         mod_id,
@@ -29,10 +29,10 @@ func add_stat_modifier(stat: String, op: StatProjector.StatModifier.Op, value: f
     modifiers.append(mod)
 
 func add_additive_stat(stat: String, value: float, priority: int = 0) -> void:
-    add_stat_modifier(stat, StatProjector.StatModifier.Op.ADD, value, priority)
+    add_stat_modifier(stat, StatProjector.ModifierOp.ADD, value, priority)
 
 func add_multiplicative_stat(stat: String, value: float, priority: int = 0) -> void:
-    add_stat_modifier(stat, StatProjector.StatModifier.Op.MUL, value, priority)
+    add_stat_modifier(stat, StatProjector.ModifierOp.MUL, value, priority)
 
 func equip_to(unit: BattleUnit) -> bool:
     if equipped_to != null:
@@ -71,9 +71,9 @@ func get_stat_bonuses() -> Dictionary:
                 bonuses[stat] = {"add": 0.0, "mul": 1.0}
             
             match mod.op:
-                StatProjector.StatModifier.Op.ADD:
+                StatProjector.ModifierOp.ADD:
                     bonuses[stat].add += mod.value
-                StatProjector.StatModifier.Op.MUL:
+                StatProjector.ModifierOp.MUL:
                     bonuses[stat].mul *= mod.value
     
     return bonuses

@@ -1,6 +1,8 @@
 class_name BattleUnit
 extends Node2D
 
+const StatProjector = preload("res://stat_projector.gd")
+
 signal unit_died
 signal stat_changed(stat_name: String, new_value: float)
 signal status_applied(status: StatusEffect)
@@ -15,7 +17,9 @@ var stats: Dictionary = {
     "attack": 10.0,
     "defense": 5.0,
     "speed": 5.0,
-    "initiative": 0.0
+    "initiative": 0.0,
+    "attacks_taken": 0,
+    "damage_taken": 0.0
 }
 
 var stat_projectors: Dictionary = {}
@@ -27,15 +31,12 @@ var locked_resources: Dictionary = {}  # Track reserved resources for pending sk
 func _init() -> void:
     # Initialize stat projectors in _init so they're available before _ready
     for stat_name in stats.keys():
-        var projector = load("res://stat_projector.gd").new()
-        stat_projectors[stat_name] = projector
+        stat_projectors[stat_name] = StatProjector.new()
 
 func _ready() -> void:
     # Initialize any missing stat projectors (for dynamically added stats like mana)
     for stat_name in stats.keys():
-        if not stat_projectors.has(stat_name):
-            var projector = load("res://stat_projector.gd").new()
-            stat_projectors[stat_name] = projector
+        _ensure_stat_projector(stat_name)
     
     # Connect signals after node is in tree
     for stat_name in stats.keys():
@@ -46,28 +47,118 @@ func _ready() -> void:
 func _on_stat_calculation_changed(payload: Dictionary, stat_name: String) -> void:
     stat_changed.emit(stat_name, get_projected_stat(stat_name))
 
-func get_projected_stat(stat_name: String) -> float:
-    if not stat_projectors.has(stat_name):
+func get_projected_stat(stat_name) -> float:
+    var key_name: String = String(stat_name)
+    if not _ensure_stat_projector(key_name):
         push_error("Unknown stat: " + stat_name)
         return 0.0
-    return stat_projectors[stat_name].calculate_stat(stats.get(stat_name, 0.0))
+    var raw_value = stats.get(key_name, stats.get(StringName(key_name), 0.0))
+    return stat_projectors[key_name].calculate_stat(raw_value)
+
+func capture_battle_state() -> Dictionary:
+    var base_stats: Dictionary = {}
+    var projected_stats: Dictionary = {}
+    var modifier_state: Dictionary = {}
+
+    for stat_key in stats.keys():
+        var stat_name: String = String(stat_key)
+        base_stats[stat_name] = stats[stat_key]
+        projected_stats[stat_name] = get_projected_stat(stat_name)
+        modifier_state[stat_name] = _serialize_stat_modifiers(stat_name)
+
+    var equipment_slots: Array = equipment.keys()
+    var locked_copy: Dictionary = locked_resources.duplicate(true)
+
+    return {
+        "unit_id": name,
+        "unit_name": unit_name,
+        "team": team,
+        "base_stats": base_stats,
+        "projected_stats": projected_stats,
+        "modifiers": modifier_state,
+        "status_effects": get_status_list(),
+        "equipment": equipment_slots,
+        "locked_resources": locked_copy
+    }
+
+func _serialize_stat_modifiers(stat_name: String) -> Array[Dictionary]:
+    var key_name: String = String(stat_name)
+    if not _ensure_stat_projector(key_name):
+        return []
+
+    var serialized: Array[Dictionary] = []
+    for mod in stat_projectors[key_name].list_modifiers():
+        if not mod is StatProjector.StatModifier:
+            continue
+
+        serialized.append({
+            "id": mod.id,
+            "op": _modifier_op_to_string(mod.op),
+            "value": mod.value,
+            "priority": mod.priority,
+            "applies_to": mod.applies_to.duplicate(true),
+            "expires_at_unix": mod.expires_at_unix
+        })
+
+    return serialized
+
+func _modifier_op_to_string(op: int) -> String:
+    match op:
+        StatProjector.ModifierOp.ADD:
+            return "ADD"
+        StatProjector.ModifierOp.MUL:
+            return "MUL"
+        StatProjector.ModifierOp.SET:
+            return "SET"
+        _:
+            return "UNKNOWN"
+
+func _ensure_stat_projector(stat_name) -> StatProjector:
+    var key_name: String = String(stat_name)
+    if stat_projectors.has(key_name):
+        return stat_projectors[key_name]
+
+    var key_name_sn = StringName(key_name)
+
+    if not stats.has(key_name) and not stats.has(key_name_sn):
+        return null
+
+    var projector: StatProjector = StatProjector.new()
+    stat_projectors[key_name] = projector
+    if is_inside_tree():
+        projector.connect("stat_calculation_changed", _on_stat_calculation_changed.bind(key_name))
+    return projector
 
 func take_damage(amount: float) -> void:
     var actual_damage = amount
     var defense = get_projected_stat("defense")
     actual_damage = max(1.0, actual_damage - defense)
     
-    stats.health -= actual_damage
-    if stats.health <= 0:
-        stats.health = 0
+    var current_health: float = stats.get("health", 0.0)
+    current_health -= actual_damage
+    stats["health"] = current_health
+
+    var attacks_taken: int = stats.get("attacks_taken", 0)
+    attacks_taken += 1
+    stats["attacks_taken"] = attacks_taken
+
+    var damage_taken: float = stats.get("damage_taken", 0.0)
+    damage_taken += actual_damage
+    stats["damage_taken"] = damage_taken
+    
+    if current_health <= 0:
+        stats["health"] = 0.0
         unit_died.emit()
     
-    stat_changed.emit("health", stats.health)
+    stat_changed.emit("health", stats.get("health", 0.0))
+    stat_changed.emit("attacks_taken", stats.get("attacks_taken", 0))
+    stat_changed.emit("damage_taken", stats.get("damage_taken", 0.0))
 
 func heal(amount: float) -> void:
     var max_health = get_projected_stat("max_health")
-    stats.health = min(stats.health + amount, max_health)
-    stat_changed.emit("health", stats.health)
+    var new_health = min(stats.get("health", 0.0) + amount, max_health)
+    stats["health"] = new_health
+    stat_changed.emit("health", new_health)
 
 func add_status_effect(status: StatusEffect) -> void:
     if status_effects.has(status):
@@ -172,3 +263,6 @@ func get_available_resource(resource_type: String) -> float:
 
 func clear_locked_resources() -> void:
     locked_resources.clear()
+
+func get_turn_order() -> int:
+    return floori(stats.initiative)

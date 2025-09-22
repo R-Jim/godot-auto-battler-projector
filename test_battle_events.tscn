@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://test"]
+
+[ext_resource type="Script" path="res://tests/unit/test_battle_events.gd" id="1_1"]
+
+[node name="TestScene" type="Node"]
+
+[node name="GutTest" type="Node" parent="."]
+script = ExtResource("1_1")

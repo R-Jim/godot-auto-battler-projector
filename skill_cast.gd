@@ -12,6 +12,8 @@ var claimed_resources: Dictionary = {}
 var cast_start_time: float = -1.0
 var is_committed: bool = false
 var is_cancelled: bool = false
+var execution_log: Array[Dictionary] = []
+var last_refunded_resources: Dictionary = {}
 
 func _init(_skill: BattleSkill = null, _caster: BattleUnit = null) -> void:
     skill = _skill
@@ -25,7 +27,8 @@ func claim_resources() -> bool:
     if is_committed:
         push_error("SkillCast: Resources already claimed")
         return false
-    
+
+    execution_log.clear()
     # Check cooldown
     if skill.is_on_cooldown():
         return false
@@ -48,6 +51,7 @@ func claim_resources() -> bool:
     
     is_committed = true
     cast_start_time = Time.get_unix_time_from_system()
+    last_refunded_resources = {}
     cast_started.emit()
     
     return true
@@ -55,18 +59,20 @@ func claim_resources() -> bool:
 func refund() -> void:
     if not is_committed or is_cancelled:
         return
-    
+
     # Return locked resources
     for resource_type in claimed_resources:
         var amount = claimed_resources[resource_type]
         caster.unlock_resource(resource_type, amount)
     
+    last_refunded_resources = claimed_resources.duplicate(true)
     claimed_resources.clear()
     is_committed = false
     is_cancelled = true
+    execution_log.clear()
     cast_cancelled.emit()
 
-func execute(rule_processor: BattleRuleProcessor) -> bool:
+func execute(rule_processor = null) -> bool:
     if not is_committed:
         push_error("SkillCast: Attempting to execute uncommitted cast")
         return false
@@ -87,19 +93,22 @@ func execute(rule_processor: BattleRuleProcessor) -> bool:
         caster.stats[resource_type] -= amount
         caster.stat_changed.emit(resource_type, caster.stats[resource_type])
     
+    var current_execution: Array[Dictionary] = []
     # Execute skill on all targets
     for target in targets:
         if is_instance_valid(target) and target.is_alive():
-            skill.execute_on_target(caster, target, rule_processor)
-    
+            var result: Dictionary = skill.execute_on_target(caster, target, rule_processor)
+            current_execution.append(result)
+
     # Mark skill as used (for cooldown)
     skill.last_used_time = Time.get_unix_time_from_system()
-    
+
     # Clean up
     claimed_resources.clear()
     is_committed = false
+    execution_log = current_execution
     cast_completed.emit()
-    
+
     return true
 
 func get_cast_progress() -> float:
@@ -121,3 +130,9 @@ func interrupt() -> void:
 
 func get_claimed_resource_amount(resource_type: String) -> float:
     return claimed_resources.get(resource_type, 0.0)
+
+func get_execution_log() -> Array[Dictionary]:
+    return execution_log.duplicate(true)
+
+func get_refunded_resources() -> Dictionary:
+    return last_refunded_resources.duplicate(true)

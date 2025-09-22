@@ -4,7 +4,9 @@ var observer = null  # SkillActivationObserver
 var unit1 = null  # BattleUnit
 var unit2 = null  # BattleUnit
 var skill = null  # BattleSkill
-var rule_processor = null  # BattleRuleProcessor
+const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+
+var rule_processor = null
 
 func before_each() -> void:
 	var SkillActivationObserver = load("res://skill_activation_observer.gd")
@@ -55,8 +57,7 @@ func before_each() -> void:
 	unit1.skills.append(skill)
 	
 	# Mock rule processor
-	var BattleRuleProcessor = load("res://battle_rule_processor.gd")
-	rule_processor = BattleRuleProcessor.new()
+	rule_processor = BattleRuleProcessorScript.new()
 	rule_processor.skip_auto_load = true
 	rule_processor.rules = []
 	

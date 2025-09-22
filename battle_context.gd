@@ -14,7 +14,7 @@ var encounter_modifiers: Array = []
 var environmental_effects: Dictionary = {}
 
 # References
-var rule_processor: BattleRuleProcessor = null
+var rule_processor = null
 
 # Cached computations (invalidated on update)
 var _cache_valid: bool = false

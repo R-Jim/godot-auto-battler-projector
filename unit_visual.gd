@@ -4,11 +4,11 @@ extends Node2D
 @export var unit_color: Color = Color.WHITE
 @export var team_color: Color = Color.BLUE
 
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var health_bar: ProgressBar = $HealthBar
-@onready var name_label: Label = $NameLabel
-@onready var status_container: HBoxContainer = $StatusContainer
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
+var sprite: Sprite2D
+var health_bar: ProgressBar
+var name_label: Label
+var status_container: HBoxContainer
+var animation_player: AnimationPlayer
 
 var battle_unit: BattleUnit
 

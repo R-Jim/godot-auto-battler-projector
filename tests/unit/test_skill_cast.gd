@@ -3,7 +3,9 @@ extends GutTest
 var caster: BattleUnit
 var target: BattleUnit
 var skill: BattleSkill
-var rule_processor: BattleRuleProcessor
+const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+
+var rule_processor
 
 func before_each() -> void:
     caster = BattleUnit.new()
@@ -39,7 +41,7 @@ func before_each() -> void:
     skill.resource_type = "mana"
     skill.cooldown = 5.0
     
-    rule_processor = BattleRuleProcessor.new()
+    rule_processor = BattleRuleProcessorScript.new()
     rule_processor.skip_auto_load = true
     rule_processor.rules = []
 

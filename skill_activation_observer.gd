@@ -23,6 +23,7 @@ var rule_processor = null  # BattleRuleProcessor
 var _evaluation_timer: float = 0.0
 var _skill_history: Array[Dictionary] = []
 
+
 func _ready() -> void:
 	skill_evaluator = load("res://skill_evaluator.gd").new()
 	action_queue = load("res://unit_action_queue.gd").new()
@@ -119,6 +120,8 @@ func _check_skill_activations() -> void:
 		var best_skill = _evaluate_unit_skills(unit)
 		if best_skill:
 			_initiate_skill_cast(unit, best_skill)
+
+
 
 func _evaluate_unit_skills(unit: BattleUnit) -> BattleSkill:
 	# Build evaluation context

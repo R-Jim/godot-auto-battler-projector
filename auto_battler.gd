@@ -24,7 +24,7 @@ var current_round: int = 0
 var turn_queue: Array = []
 var active_unit: BattleUnit = null
 
-var rule_processor: BattleRuleProcessor
+var rule_processor
 var battle_context: Dictionary = {}
 
 # New observer system components
@@ -261,12 +261,10 @@ func _on_unit_died(unit: BattleUnit) -> void:
 
 # Observer system methods
 func _setup_observer_system() -> void:
-    var SkillActivationObserver = load("res://skill_activation_observer.gd")
     skill_observer = SkillActivationObserver.new()
     skill_observer.name = "SkillObserver"
     add_child(skill_observer)
     
-    var BattleContext = load("res://battle_context.gd")
     observer_battle_context = BattleContext.new()
     observer_battle_context.rule_processor = rule_processor
     

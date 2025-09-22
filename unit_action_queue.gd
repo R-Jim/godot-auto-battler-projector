@@ -81,12 +81,15 @@ func get_time_until_next_action(unit: BattleUnit) -> float:
     var current_time = Time.get_unix_time_from_system()
     var next_action_time = _unit_timers[unit]
     
+    if current_time >= next_action_time:
+        return _calculate_action_delay(unit)
+
     return max(0.0, next_action_time - current_time)
 
 func force_unit_action(unit: BattleUnit) -> void:
     # Force a unit to act immediately (for reactions/interrupts)
     if registered_units.has(unit):
-        _unit_timers[unit] = 0.0
+        _unit_timers[unit] = Time.get_unix_time_from_system()
 
 # Internal methods
 func _is_unit_ready(unit: BattleUnit, current_time: float) -> bool:
@@ -96,16 +99,7 @@ func _is_unit_ready(unit: BattleUnit, current_time: float) -> bool:
     return current_time >= _unit_timers[unit]
 
 func _reset_unit_timer(unit: BattleUnit, current_time: float) -> void:
-    var speed = unit.get_projected_stat("speed")
-    var action_delay = base_action_delay / (1.0 + speed * speed_scaling_factor)
-    
-    # Apply status modifiers
-    if unit.has_status("haste"):
-        action_delay *= 0.75
-    elif unit.has_status("slow"):
-        action_delay *= 1.5
-    
-    _unit_timers[unit] = current_time + action_delay
+    _unit_timers[unit] = current_time + _calculate_action_delay(unit)
 
 func _calculate_condition_modifier(unit: BattleUnit) -> float:
     var modifier: float = 1.0
@@ -195,8 +189,7 @@ func get_action_timeline(duration: float = 5.0) -> Array[Dictionary]:
         
         # Update simulation
         simulated_time = next_time
-        var speed = next_unit.get_projected_stat("speed")
-        var delay = base_action_delay / (1.0 + speed * speed_scaling_factor)
+        var delay = _calculate_action_delay(next_unit)
         simulated_timers[next_unit] = simulated_time + delay
     
     return timeline
@@ -209,11 +202,22 @@ func get_average_action_rate() -> float:
     
     for unit in registered_units:
         if unit.is_alive():
-            var speed = unit.get_projected_stat("speed")
-            var actions_per_second = (1.0 + speed * speed_scaling_factor) / base_action_delay
-            total_rate += actions_per_second
-    
+            var delay = _calculate_action_delay(unit)
+            if delay > 0.0:
+                total_rate += 1.0 / delay
+
     return total_rate / registered_units.size()
+
+func _calculate_action_delay(unit: BattleUnit) -> float:
+    var speed = unit.get_projected_stat("speed")
+    var action_delay = base_action_delay / (1.0 + speed * speed_scaling_factor)
+
+    if unit.has_status("haste"):
+        action_delay *= 0.75
+    elif unit.has_status("slow"):
+        action_delay *= 1.5
+
+    return max(0.0001, action_delay)
 
 # Debug method
 func debug_print_queue() -> void:

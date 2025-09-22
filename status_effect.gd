@@ -1,6 +1,8 @@
 class_name StatusEffect
 extends RefCounted
 
+const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+
 @export var id: String = ""
 @export var effect_name: String = "Status Effect"
 @export var description: String = ""
@@ -23,28 +25,20 @@ func _init(_id: String = "", _name: String = "", _desc: String = "", _duration: 
         expires_at = Time.get_unix_time_from_system() + duration
 
 func apply_to(unit: BattleUnit) -> void:
-    if not unit.is_inside_tree():
-        push_error("Unit must be in scene tree to apply status effect")
-        return
-    
-    # Try to find RuleProcessor
-    var rule_processor = null
-    
-    # Check test instance first
-    if BattleRuleProcessor.test_instance:
-        rule_processor = BattleRuleProcessor.test_instance
-    else:
-        # Try standard path
+    var rule_processor = BattleRuleProcessorScript.test_instance
+
+    if not rule_processor and unit.is_inside_tree():
         rule_processor = unit.get_node_or_null("/root/RuleProcessor")
-        if not rule_processor:
-            # In test environment, it might be a direct child of root
+        if not rule_processor and unit.get_tree():
             for child in unit.get_tree().root.get_children():
                 if child.name == "RuleProcessor":
                     rule_processor = child
                     break
-    
+
     if not rule_processor:
-        push_error("RuleProcessor not found for status effect application")
+        # Apply minimal bookkeeping so unit still tracks the status
+        unit.recalculate_stats()
+        push_warning("RuleProcessor not found for status effect application; skipping stat modifiers")
         return
     
     var context = {
@@ -102,10 +96,9 @@ func is_expired(now: float) -> bool:
     return expires_at > 0 and now >= expires_at
 
 func on_turn_start(unit: BattleUnit) -> void:
-    if not unit.is_inside_tree():
-        return
-        
-    var rule_processor = unit.get_node("/root/RuleProcessor")
+    var rule_processor = BattleRuleProcessorScript.test_instance
+    if not rule_processor and unit.is_inside_tree():
+        rule_processor = unit.get_node_or_null("/root/RuleProcessor")
     if not rule_processor:
         return
     

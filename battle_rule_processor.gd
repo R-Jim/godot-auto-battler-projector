@@ -1,207 +1,175 @@
 class_name BattleRuleProcessor
 extends Node
-# Note: This class is autoloaded as "RuleProcessor"
 
-# Static reference for test environments
-static var test_instance: BattleRuleProcessor = null
+const StatProjector = preload("res://stat_projector.gd")
 
 var rules: Array = []
 var skip_auto_load: bool = false
+static var test_instance: Node = null
 
 func _ready() -> void:
-    if not skip_auto_load:
-        load_rules()
-    
-    # Set test instance if in test environment
+    test_instance = self
     if skip_auto_load:
-        BattleRuleProcessor.test_instance = self
-
-func load_rules() -> void:
-    var file_path = "res://battle_rules.json"
-    if not FileAccess.file_exists(file_path):
-        push_warning("Rules file not found: " + file_path)
         return
-    
-    var file = FileAccess.open(file_path, FileAccess.READ)
+        
+    # Load default rules
+    var file = FileAccess.open("res://battle_rules.json", FileAccess.READ)
     if not file:
-        push_error("BattleRuleProcessor: Failed to open rules file at '%s'. Ensure the file exists and is readable." % file_path)
+        push_error("Failed to load battle_rules.json")
         return
     
-    var json_text = file.get_as_text()
-    file.close()
+    var json = JSON.parse_string(file.get_as_text())
+    if json == null:
+        push_error("Failed to parse battle_rules.json")
+        return
     
-    var parsed = JSON.parse_string(json_text)
-    if typeof(parsed) == TYPE_ARRAY:
-        rules = parsed
-        print("Loaded " + str(rules.size()) + " rules")
-    else:
-        push_error("BattleRuleProcessor: Invalid rules format in '%s'. Expected JSON array, got %s" % [file_path, typeof(parsed)])
+    print("Loaded %d rules" % json.size())
+    
+    rules.append_array(json)
+
+func add_temporary_rule(rule: Dictionary) -> void:
+    if not _validate_rule(rule):
+        push_warning("BattleRuleProcessor: Rule missing required fields ('conditions' and/or 'modifiers'). Rule data: " + str(rule))
+        return
+    rules.append(rule)
 
 func get_modifiers_for_context(context: Dictionary) -> Array:
-    var StatProjector = load("res://stat_projector.gd")
-    var result: Array = []  # Array[StatProjector.StatModifier]
+    var modifiers: Array = []
     
-    for i in range(rules.size()):
-        var rule = rules[i]
-        if not rule.has("conditions") or not rule.has("modifiers"):
-            push_warning("BattleRuleProcessor: Rule at index %d missing required fields ('conditions' and/or 'modifiers'). Rule data: %s" % [i, JSON.stringify(rule)])
+    for rule in rules:
+        if not _validate_rule(rule):
+            push_warning("BattleRuleProcessor: Rule missing required fields ('conditions' and/or 'modifiers'). Rule data: " + str(rule))
             continue
         
         if _eval_conditions(rule.conditions, context):
-            for mod_data in rule.modifiers:
-                var modifier = _create_modifier_from_data(mod_data)
-                if modifier:
-                    result.append(modifier)
+            for modifier_data in rule.modifiers:
+                var mod = _create_modifier_from_data(modifier_data)
+                if mod != null:
+                    modifiers.append(mod)
     
-    return result
+    return modifiers
 
-func _create_modifier_from_data(mod_data: Dictionary):
-    if not mod_data.has("id") or not mod_data.has("op") or not mod_data.has("value"):
-        var missing_fields = []
-        if not mod_data.has("id"):
-            missing_fields.append("id")
-        if not mod_data.has("op"):
-            missing_fields.append("op")
-        if not mod_data.has("value"):
-            missing_fields.append("value")
-        push_error("BattleRuleProcessor: Invalid modifier data - missing required fields: %s. Modifier data: %s" % [missing_fields, JSON.stringify(mod_data)])
+func _check_condition(cond: Dictionary, context: Dictionary) -> bool:
+    return _eval_conditions(cond, context)
+
+func _validate_rule(rule: Dictionary) -> bool:
+    return rule.has("conditions") and rule.has("modifiers")
+
+func _eval_conditions(cond: Dictionary, context: Dictionary) -> bool:
+    # Handle logical operators first
+    if cond.has("and"):
+        var conditions = cond["and"]
+        if not conditions is Array:
+            push_error("BattleRuleProcessor: 'and' operator requires array of conditions. Got: " + str(conditions))
+            return false
+        for subcond in conditions:
+            if not _eval_conditions(subcond, context):
+                return false
+        return true
+    
+    if cond.has("or"):
+        var conditions = cond["or"]
+        if not conditions is Array:
+            push_error("BattleRuleProcessor: 'or' operator requires array of conditions. Got: " + str(conditions))
+            return false
+        for subcond in conditions:
+            if _eval_conditions(subcond, context):
+                return true
+        return false
+    
+    if cond.has("not"):
+        return not _eval_conditions(cond["not"], context)
+    
+    # Handle property checks
+    var property = cond.get("property", "")
+    var op = cond.get("op", "eq")
+    var value = cond.get("value", null)
+    
+    if property.is_empty():
+        push_error("BattleRuleProcessor: Missing 'property' in condition: " + str(cond))
+        return false
+    
+    # Allow looking up values by property reference
+    if value is String and value.begins_with("$"):
+        var ref_prop = value.substr(1)
+        if not context.has(ref_prop):
+            return false
+        value = context[ref_prop]
+    
+    if not context.has(property):
+        # Property not present in this context; treat as non-match
+        return false
+    
+    var actual = context[property]
+    
+    match op:
+        "eq":
+            return actual == value
+        "neq":
+            return actual != value
+        "gt":
+            return actual > value
+        "gte":
+            return actual >= value
+        "lt":
+            return actual < value
+        "lte":
+            return actual <= value
+        "contains":
+            if actual is Array:
+                return actual.has(value)
+            if actual is String:
+                return actual.contains(value)
+            push_error("BattleRuleProcessor: 'contains' operator requires array or string. Got: " + str(typeof(actual)))
+            return false
+        "in":
+            if not value is Array:
+                push_error("BattleRuleProcessor: 'in' operator requires array value. Got: " + str(typeof(value)))
+                return false
+            return value.has(actual)
+        "regex":
+            if not actual is String:
+                push_error("BattleRuleProcessor: 'regex' operator requires string value. Got: " + str(typeof(actual)))
+                return false
+            var regex = RegEx.new()
+            regex.compile(value)
+            return regex.search(actual) != null
+        _:
+            push_error("BattleRuleProcessor: Unknown operator '%s' in condition. Valid operators: eq, neq, gt, gte, lt, lte, contains, in, regex. Full condition: %s" % [op, str(cond)])
+            return false
+
+func _create_modifier_from_data(data: Dictionary) -> StatProjector.StatModifier:
+    # Validate required fields
+    var required = ["id", "op", "value"]
+    var missing = required.filter(func(f): return not data.has(f))
+    if not missing.is_empty():
+        push_error("BattleRuleProcessor: Invalid modifier data - missing required fields: " + str(missing) + ". Modifier data: " + str(data))
         return null
     
-    var op = _string_to_op(mod_data.op)
-    var priority = mod_data.get("priority", 0)
-    var applies_to = mod_data.get("applies_to", [])
-    var expires_at = mod_data.get("expires_at_unix", -1.0)
-    
-    if mod_data.has("duration") and mod_data.duration > 0:
-        expires_at = Time.get_unix_time_from_system() + mod_data.duration
-    
-    var StatProjector = load("res://stat_projector.gd")
+    # Create modifier
+    var expires_at: float = data.get("expires_at", -1.0)
+    if expires_at < 0.0 and data.has("duration"):
+        expires_at = Time.get_unix_time_from_system() + float(data.get("duration", 0.0))
+
     return StatProjector.StatModifier.new(
-        mod_data.id,
-        op,
-        mod_data.value,
-        priority,
-        applies_to,
+        data.id,
+        _string_to_op(data.op),
+        float(data.value),
+        data.get("priority", 0),
+        data.get("applies_to", []),
         expires_at
     )
 
 func _string_to_op(op_str: String) -> int:
-    var StatProjector = load("res://stat_projector.gd")
-    match op_str.to_upper():
-        "ADD": return StatProjector.StatModifier.Op.ADD
-        "MUL": return StatProjector.StatModifier.Op.MUL
-        "SET": return StatProjector.StatModifier.Op.SET
-        _: 
-            push_error("BattleRuleProcessor: Unknown operation '%s'. Valid operations: ADD, MUL, SET" % op_str)
-            return StatProjector.StatModifier.Op.ADD
-
-func _eval_conditions(cond: Dictionary, context: Dictionary) -> bool:
-    if cond.has("and"):
-        if typeof(cond.and) != TYPE_ARRAY:
-            return false
-        for c in cond.and:
-            if not _eval_conditions(c, context):
-                return false
-        return true
-    
-    elif cond.has("or"):
-        if typeof(cond.or) != TYPE_ARRAY:
-            return false
-        for c in cond.or:
-            if _eval_conditions(c, context):
-                return true
-        return false
-    
-    elif cond.has("not"):
-        return not _eval_conditions(cond.not, context)
-    
-    else:
-        return _check_condition(cond, context)
-
-func _check_condition(cond: Dictionary, context: Dictionary) -> bool:
-    var property = cond.get("property", "")
-    var op = cond.get("op", "")
-    var value = cond.get("value")
-    
-    if property.is_empty():
-        push_error("BattleRuleProcessor: Condition missing required 'property' field. Condition data: %s" % JSON.stringify(cond))
-        return false
-    
-    if not context.has(property):
-        # Silently return false - this is often expected behavior
-        # Only log in debug mode if needed
-        return false
-    
-    var context_value = context[property]
-    
-    # Check if value is a reference to another property (starts with $)
-    if typeof(value) == TYPE_STRING and value.begins_with("$"):
-        var ref_property = value.substr(1)
-        if context.has(ref_property):
-            value = context[ref_property]
-    
-    match op:
-        "eq", "equals":
-            return context_value == value
-        
-        "neq", "not_equals":
-            return context_value != value
-        
-        "gt", "greater":
-            if typeof(context_value) in [TYPE_INT, TYPE_FLOAT] and typeof(value) in [TYPE_INT, TYPE_FLOAT]:
-                return context_value > value
-            return false
-        
-        "gte", "greater_equals":
-            if typeof(context_value) in [TYPE_INT, TYPE_FLOAT] and typeof(value) in [TYPE_INT, TYPE_FLOAT]:
-                return context_value >= value
-            return false
-        
-        "lt", "less":
-            if typeof(context_value) in [TYPE_INT, TYPE_FLOAT] and typeof(value) in [TYPE_INT, TYPE_FLOAT]:
-                return context_value < value
-            return false
-        
-        "lte", "less_equals":
-            if typeof(context_value) in [TYPE_INT, TYPE_FLOAT] and typeof(value) in [TYPE_INT, TYPE_FLOAT]:
-                return context_value <= value
-            return false
-        
-        "contains", "has":
-            if typeof(context_value) == TYPE_ARRAY:
-                # If checking array of strings, check if any string contains the value
-                if typeof(value) == TYPE_STRING:
-                    for item in context_value:
-                        if typeof(item) == TYPE_STRING and item.find(value) >= 0:
-                            return true
-                # Otherwise check for exact match
-                return context_value.has(value)
-            elif typeof(context_value) == TYPE_STRING and typeof(value) == TYPE_STRING:
-                return context_value.find(value) >= 0
-            return false
-        
-        "in":
-            if typeof(value) == TYPE_ARRAY:
-                return value.has(context_value)
-            return false
-        
-        "regex":
-            if typeof(context_value) == TYPE_STRING and typeof(value) == TYPE_STRING:
-                var regex = RegEx.new()
-                regex.compile(value)
-                return regex.search(context_value) != null
-            return false
-        
+    op_str = op_str.to_upper()
+    match op_str:
+        "ADD": return StatProjector.ModifierOp.ADD
+        "MUL": return StatProjector.ModifierOp.MUL
+        "SET": return StatProjector.ModifierOp.SET
         _:
-            push_error("BattleRuleProcessor: Unknown operator '%s' in condition. Valid operators: eq, neq, gt, gte, lt, lte, contains, in, regex. Full condition: %s" % [op, JSON.stringify(cond)])
-            return false
+            push_warning("BattleRuleProcessor: Unknown operation '%s'. Defaulting to ADD." % op_str)
+            return StatProjector.ModifierOp.ADD  # Default to ADD for unknown operations
 
-func reload_rules() -> void:
-    rules.clear()
-    load_rules()
-
-func add_temporary_rule(rule: Dictionary) -> void:
-    rules.append(rule)
-
-func clear_temporary_rules() -> void:
-    load_rules()
+func _exit_tree() -> void:
+    if test_instance == self:
+        test_instance = null

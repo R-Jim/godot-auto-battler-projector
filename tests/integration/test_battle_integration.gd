@@ -1,13 +1,16 @@
 extends GutTest
 
-var battle_scene: Node
-var rule_processor: BattleRuleProcessor
+const BattleRuleProcessorScript = preload("res://battle_rule_processor.gd")
+
+var battle_scene: Node2D
+var rule_processor
 var unit1: BattleUnit
 var unit2: BattleUnit
 
 func before_each():
     # Create rule processor
-    rule_processor = BattleRuleProcessor.new()
+    var BattleRuleProcessorScript = load("res://battle_rule_processor.gd")
+    rule_processor = BattleRuleProcessorScript.new()
     rule_processor.name = "RuleProcessor"
     rule_processor.skip_auto_load = true  # Don't load from JSON file
     # Add to root so status effects can find it
@@ -69,7 +72,7 @@ func after_each():
         if child.name == "RuleProcessor":
             child.queue_free()
     # Clear test instance
-    BattleRuleProcessor.test_instance = null
+    BattleRuleProcessorScript.test_instance = null
 
 func test_skill_execution_with_rules():
     var skill = BattleSkill.new()

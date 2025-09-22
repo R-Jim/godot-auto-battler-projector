@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 RuleProcessor="*res://battle_rule_processor.gd"
 ProgressionManager="*res://progression_manager.gd"
+BattleEvents="*res://battle_events.gd"
 
 [display]
 

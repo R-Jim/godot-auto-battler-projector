@@ -4,7 +4,7 @@ extends Node
 class_name SkillCastExample
 
 var pending_casts: Array[SkillCast] = []
-var rule_processor: BattleRuleProcessor
+var rule_processor
 
 func _ready() -> void:
 	rule_processor = get_node("/root/RuleProcessor")
