@@ -4,12 +4,12 @@
 The encounter system has been successfully implemented with the following components:
 
 ### Core Classes Created:
-1. **EncounterManager** (`encounter_manager.gd`) - Main orchestrator for encounters
-2. **Encounter** (`encounter.gd`) - Individual encounter configuration
-3. **Wave** (`wave.gd`) - Wave management within encounters
-4. **EncounterRewards** (`encounter_rewards.gd`) - Rewards and progression system
-5. **DifficultyScaler** (`difficulty_scaler.gd`) - Dynamic difficulty adjustment
-6. **UnitFactory** (`unit_factory.gd`) - Enemy generation from templates
+1. **EncounterManager** (`src/encounter/encounter_manager.gd`) - Main orchestrator for encounters
+2. **Encounter** (`src/encounter/encounter.gd`) - Individual encounter configuration
+3. **Wave** (`src/encounter/wave.gd`) - Wave management within encounters
+4. **EncounterRewards** (`src/encounter/encounter_rewards.gd`) - Rewards and progression system
+5. **DifficultyScaler** (`src/encounter/difficulty_scaler.gd`) - Dynamic difficulty adjustment
+6. **UnitFactory** (`src/encounter/unit_factory.gd`) - Enemy generation from templates
 
 ### Data Files Created:
 1. **encounters.json** - Contains 5 sample encounters:
@@ -40,7 +40,7 @@ The encounter system has been successfully implemented with the following compon
 - Uses existing AI and skill systems
 
 ### Test Scene:
-- Created `encounter_test.gd` and `encounter_test.tscn` for testing
+- Created `scenes/tests/encounter_test.gd` and `scenes/tests/encounter_test.tscn` for testing
 - Provides UI for selecting encounters and difficulty
 - Shows wave progression and rewards
 
