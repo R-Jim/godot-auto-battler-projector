@@ -29,6 +29,10 @@ window/size/viewport_height=600
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
+[logging]
+
+file_logging/enable_file_logging=false
+
 [rendering]
 
 renderer/rendering_method="mobile"

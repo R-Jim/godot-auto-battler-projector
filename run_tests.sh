@@ -3,6 +3,9 @@
 # Run unit tests for Godot project with cleanup
 echo "Running Godot unit tests..."
 
+LOG_DIR="${LOG_DIR:-$(pwd)/.godot_logs}"
+mkdir -p "$LOG_DIR"
+
 # Function to cleanup on exit
 cleanup() {
     echo "Cleaning up Godot processes..."
@@ -25,7 +28,7 @@ fi
 # Run tests using GUT command line with additional flags
 # Note: macOS doesn't have timeout by default, so we'll use a background process
 # --quit-after 1 ensures Godot exits after one frame when tests complete
-godot --headless --quit-after 1 -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -gexit &
+godot --headless --log-file "$LOG_DIR/godot-test.log" --quit-after 1 -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -gexit &
 GODOT_PID=$!
 
 # Wait for process or timeout
@@ -46,9 +49,6 @@ if [ -z "$EXIT_CODE" ]; then
     wait $GODOT_PID
     EXIT_CODE=$?
 fi
-
-# Capture exit code
-EXIT_CODE=$?
 
 # Give a moment for process to exit cleanly
 sleep 1
