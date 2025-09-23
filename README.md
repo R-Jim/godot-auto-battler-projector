@@ -234,7 +234,7 @@ unit.init_from_template({
 
 ### Skill System Architecture
 
-The skill system uses a cast-based approach with proper separation of concerns:
+The skill system uses a cast-based approach with proper separation of concerns (see `docs/skill_system_architecture.md` for the full design rationale):
 
 ```gdscript
 # Skill definition
@@ -309,7 +309,7 @@ The encounter system provides structured wave-based combat progression:
 All game mechanics can be modified through JSON files without touching code:
 
 #### Battle Rules (`data/battle_rules.json`)
-Define combat interactions, synergies, and conditional modifiers (stored as an array of rule dictionaries):
+Define combat interactions, synergies, and conditional modifiers (stored as an array of rule dictionaries). Validate new entries against `data/battle_rules.schema.json` to ensure they map cleanly onto `StatProjector` modifiers:
 ```json
 [
   {

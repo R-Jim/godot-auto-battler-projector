@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "res://data/battle_rules.schema.json",
+  "title": "Battle Rule Definitions",
+  "description": "Schema for validating auto-battler rule definitions that feed the StatProjector pipeline.",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/rule"
+  },
+  "$defs": {
+    "rule": {
+      "type": "object",
+      "required": ["id", "conditions", "modifiers"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "conditions": {
+          "$ref": "#/$defs/condition"
+        },
+        "modifiers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/modifier"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "description": "Logical or property-based condition used to decide if a rule applies.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/property_condition"
+        },
+        {
+          "$ref": "#/$defs/and_condition"
+        },
+        {
+          "$ref": "#/$defs/or_condition"
+        },
+        {
+          "$ref": "#/$defs/not_condition"
+        }
+      ]
+    },
+    "property_condition": {
+      "type": "object",
+      "required": ["property", "op", "value"],
+      "properties": {
+        "property": {
+          "type": "string",
+          "minLength": 1
+        },
+        "op": {
+          "type": "string",
+          "enum": [
+            "eq",
+            "neq",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "contains",
+            "in",
+            "regex"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/condition_value"
+        }
+      },
+      "additionalProperties": false
+    },
+    "and_condition": {
+      "type": "object",
+      "required": ["and"],
+      "properties": {
+        "and": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "or_condition": {
+      "type": "object",
+      "required": ["or"],
+      "properties": {
+        "or": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "not_condition": {
+      "type": "object",
+      "required": ["not"],
+      "properties": {
+        "not": {
+          "$ref": "#/$defs/condition"
+        }
+      },
+      "additionalProperties": false
+    },
+    "condition_value": {
+      "description": "Value to compare against context data. May reference another property using a leading $.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array"
+        },
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "modifier": {
+      "type": "object",
+      "required": ["id", "op", "value"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "op": {
+          "type": "string",
+          "enum": ["ADD", "MUL", "SET"]
+        },
+        "value": {
+          "type": "number"
+        },
+        "priority": {
+          "type": "integer"
+        },
+        "applies_to": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "expires_at": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
