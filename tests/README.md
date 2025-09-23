@@ -31,7 +31,6 @@ godot --headless -s res://addons/gut/gut_cmdln.gd -gtest=test_property_projector
   - `test_status_effect.gd` - Tests for StatusEffect
   - `test_battle_skill.gd` - Tests for BattleSkill
   - `test_battle_rule_processor.gd` - Tests for rule processing
-  - `test_tag_builder.gd` - Tests for tag building system
 
 - `integration/` - Integration tests
   - `test_battle_integration.gd` - End-to-end battle system tests
