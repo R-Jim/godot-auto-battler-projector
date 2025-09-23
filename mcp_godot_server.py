@@ -11,6 +11,7 @@ import sys
 import signal
 import time
 import atexit
+from configparser import ConfigParser
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
@@ -26,6 +27,26 @@ PROJECT_ROOT = Path(__file__).parent
 GODOT_PROJECT_FILE = PROJECT_ROOT / "project.godot"
 DATA_DIR = PROJECT_ROOT / "data"
 TESTS_DIR = PROJECT_ROOT / "tests"
+
+
+def _load_project_settings() -> ConfigParser:
+    parser = ConfigParser()
+    parser.optionxform = str
+    parser.read(GODOT_PROJECT_FILE)
+    return parser
+
+
+def get_project_setting(section: str, option: str, default: str = "") -> str:
+    parser = _load_project_settings()
+    if parser.has_option(section, option):
+        return parser.get(section, option)
+    return default
+
+
+def resolve_res_path(res_path: str) -> Path:
+    if res_path.startswith("res://"):
+        return PROJECT_ROOT / res_path.replace("res://", "", 1)
+    return PROJECT_ROOT / res_path
 
 # Process tracking
 _active_processes: Set[subprocess.Popen] = set()
@@ -574,36 +595,51 @@ async def validate_battle_rules() -> str:
     """
     Validate the battle rules configuration file.
     """
-    rules_file = PROJECT_ROOT / "battle_rules.json"
-    data = load_json_file(rules_file)
-    
-    if data is None:
-        return "Failed to load battle_rules.json"
-    
-    validation_results = []
-    
-    # Check for required fields
-    required_fields = ["rules"]
-    for field in required_fields:
-        if field in data:
-            validation_results.append(f"✓ Found '{field}' field")
-        else:
-            validation_results.append(f"✗ Missing required field '{field}'")
-    
-    # Validate rules
-    if "rules" in data:
-        rules_count = len(data["rules"])
-        validation_results.append(f"\nTotal rules: {rules_count}")
-        
-        for rule in data["rules"][:3]:  # Show first 3 rules
-            rule_info = [
-                f"\nRule: {rule.get('id', 'Unknown')}",
-                f"  Priority: {rule.get('priority', 'Not set')}",
-                f"  Conditions: {len(rule.get('conditions', []))}",
-                f"  Actions: {len(rule.get('actions', []))}"
+    configured_path = get_project_setting("game", "battle_rules_path", "res://data/battle_rules.json")
+    rules_file = resolve_res_path(configured_path)
+
+    if not rules_file.exists():
+        return f"Battle rules file not found at {rules_file}"
+
+    try:
+        with open(rules_file, "r", encoding="utf-8") as handle:
+            raw_rules = json.load(handle)
+    except Exception as exc:
+        return f"Failed to load battle rules: {exc}"
+
+    validation_results: List[str] = []
+
+    if isinstance(raw_rules, dict):
+        rules_list = raw_rules.get("rules", [])
+        if not isinstance(rules_list, list):
+            return "Battle rules JSON must contain a list under the 'rules' key"
+    elif isinstance(raw_rules, list):
+        rules_list = raw_rules
+    else:
+        return "Battle rules JSON must resolve to either an array or an object with a 'rules' array"
+
+    validation_results.append(f"Total rules: {len(rules_list)}")
+
+    preview_count = min(3, len(rules_list))
+    for index in range(preview_count):
+        rule = rules_list[index]
+        if not isinstance(rule, dict):
+            validation_results.append(f"\nRule {index + 1}: Invalid entry (expected Dictionary)")
+            continue
+
+        conditions = rule.get("conditions")
+        modifiers = rule.get("modifiers")
+        condition_desc = "valid" if isinstance(conditions, (dict, list)) else "missing"
+        modifier_count = len(modifiers) if isinstance(modifiers, list) else 0
+
+        validation_results.extend(
+            [
+                f"\nRule: {rule.get('id', rule.get('name', f'Rule {index + 1}'))}",
+                f"  Conditions: {condition_desc}",
+                f"  Modifiers: {modifier_count}",
             ]
-            validation_results.extend(rule_info)
-    
+        )
+
     return "\n".join(validation_results)
 
 

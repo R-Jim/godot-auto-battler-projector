@@ -119,7 +119,7 @@ Complete auto-battler implementation with visual components:
 
 ### 3. Battle Rule Processing (`src/battle/battle_rule_processor.gd`)
 
-Evaluates conditions and generates modifiers based on game context. All combat mechanics are defined in `battle_rules.json`.
+Evaluates conditions and generates modifiers based on game context. All combat mechanics are defined in the JSON file referenced by the project setting `[game] battle_rules_path` (defaults to `res://data/battle_rules.json`).
 
 ```json
 {
@@ -308,22 +308,24 @@ The encounter system provides structured wave-based combat progression:
 
 All game mechanics can be modified through JSON files without touching code:
 
-#### Battle Rules (`battle_rules.json`)
-Define combat interactions, synergies, and conditional modifiers:
+#### Battle Rules (`data/battle_rules.json`)
+Define combat interactions, synergies, and conditional modifiers (stored as an array of rule dictionaries):
 ```json
-{
-  "id": "elemental_synergy",
-  "name": "Fire melts ice for bonus damage",
-  "conditions": {
-    "and": [
-      { "property": "target_status", "op": "contains", "value": "frozen" },
-      { "property": "skill_damage_type", "op": "eq", "value": "fire" }
+[
+  {
+    "id": "elemental_synergy",
+    "name": "Fire melts ice for bonus damage",
+    "conditions": {
+      "and": [
+        { "property": "target_status", "op": "contains", "value": "frozen" },
+        { "property": "skill_damage_type", "op": "eq", "value": "fire" }
+      ]
+    },
+    "modifiers": [
+      { "id": "melt_bonus", "op": "MUL", "value": 1.5, "priority": 50 }
     ]
-  },
-  "modifiers": [
-    { "id": "melt_bonus", "op": "MUL", "value": 1.5, "priority": 50 }
-  ]
-}
+  }
+]
 ```
 
 #### Unit Templates (`data/unit_templates.json`)

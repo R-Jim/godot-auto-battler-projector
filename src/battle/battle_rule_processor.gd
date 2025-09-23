@@ -2,30 +2,29 @@ class_name BattleRuleProcessor
 extends Node
 
 const StatProjector = preload("res://src/skills/stat_projector.gd")
+const PROJECT_SETTING_RULES_PATH: String = "game/battle_rules_path"
 
 var rules: Array = []
 var skip_auto_load: bool = false
+var rules_path_override: String = ""
 static var test_instance: Node = null
 
 func _ready() -> void:
     test_instance = self
     if skip_auto_load:
         return
-        
-    # Load default rules
-    var file = FileAccess.open("res://battle_rules.json", FileAccess.READ)
-    if not file:
-        push_error("Failed to load battle_rules.json")
+
+    var effective_path: String = rules_path_override
+    if effective_path.is_empty():
+        effective_path = ProjectSettings.get_setting(PROJECT_SETTING_RULES_PATH, "")
+
+    if effective_path.is_empty():
+        push_warning("BattleRuleProcessor: No battle rules path configured; skipping auto-load")
         return
-    
-    var json = JSON.parse_string(file.get_as_text())
-    if json == null:
-        push_error("Failed to parse battle_rules.json")
-        return
-    
-    print("Loaded %d rules" % json.size())
-    
-    rules.append_array(json)
+
+    var loaded: bool = load_rules_from_path(effective_path)
+    if not loaded:
+        push_error("BattleRuleProcessor: Failed to load battle rules from '%s'" % effective_path)
 
 func add_temporary_rule(rule: Dictionary) -> void:
     if not _validate_rule(rule):
@@ -116,14 +115,16 @@ func _eval_conditions(cond: Dictionary, context: Dictionary) -> bool:
         "lte":
             return actual <= value
         "contains":
-            if actual is Array:
-                return actual.has(value)
+            if _is_collection(actual):
+                return _collection_contains(actual, value)
             if actual is String:
-                return actual.contains(value)
+                if value is String:
+                    return actual.contains(value)
+                return actual == value
             push_error("BattleRuleProcessor: 'contains' operator requires array or string. Got: " + str(typeof(actual)))
             return false
         "in":
-            if not value is Array:
+            if not _is_collection(value):
                 push_error("BattleRuleProcessor: 'in' operator requires array value. Got: " + str(typeof(value)))
                 return false
             return value.has(actual)
@@ -173,3 +174,50 @@ func _string_to_op(op_str: String) -> int:
 func _exit_tree() -> void:
     if test_instance == self:
         test_instance = null
+
+func load_rules_from_path(path: String) -> bool:
+    if path.is_empty():
+        push_error("BattleRuleProcessor: Provided rules path is empty")
+        return false
+
+    var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+    if file == null:
+        push_error("BattleRuleProcessor: Failed to open rules file '%s'" % path)
+        return false
+
+    var json_data: Variant = JSON.parse_string(file.get_as_text())
+    file.close()
+
+    if json_data == null or not (json_data is Array):
+        push_error("BattleRuleProcessor: Failed to parse rules from '%s'" % path)
+        return false
+
+    rules.clear()
+    var rule_array: Array = json_data
+    rules.append_array(rule_array)
+    print("Loaded %d battle rules from %s" % [rules.size(), path])
+    return true
+
+func set_rules_path(path: String) -> void:
+    rules_path_override = path
+
+func _is_collection(value: Variant) -> bool:
+    return value is Array or value is PackedStringArray
+
+func _collection_contains(collection: Variant, item: Variant) -> bool:
+    if collection is PackedStringArray:
+        var psa: PackedStringArray = collection
+        if item is String:
+            for entry in psa:
+                if entry == item or entry.contains(item):
+                    return true
+            return false
+        return psa.has(item)
+
+    var array: Array = collection
+    for entry in array:
+        if entry == item:
+            return true
+        if entry is String and item is String and entry.contains(item):
+            return true
+    return false

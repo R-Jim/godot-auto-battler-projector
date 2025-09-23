@@ -35,7 +35,7 @@ The encounter system has been successfully implemented with the following compon
 
 ### Integration with Existing Systems:
 - Extended `AutoBattler` to support wave context
-- Added encounter-specific rules to `battle_rules.json`
+- Added encounter-specific rules to the configurable battle rules file (`res://data/battle_rules.json` by default)
 - Leverages existing property projection system for modifiers
 - Uses existing AI and skill systems
 

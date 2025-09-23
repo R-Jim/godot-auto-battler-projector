@@ -21,6 +21,10 @@ RuleProcessor="*res://src/battle/battle_rule_processor.gd"
 ProgressionManager="*res://src/progression/progression_manager.gd"
 BattleEvents="*res://src/battle/battle_events.gd"
 
+[game]
+
+battle_rules_path="res://data/battle_rules.json"
+
 [display]
 
 window/size/viewport_width=800
